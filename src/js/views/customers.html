@@ -1,0 +1,43 @@
+<div class="page-view">
+  <div class="page-head">
+    <div>
+      <h1>Customers</h1>
+      <p>Live customer records from the AML backend.</p>
+    </div>
+  </div>
+  <div class="panel search-panel">
+    <oj-input-text
+      label-hint="Search customers"
+      value="{{search}}"
+    ></oj-input-text>
+  </div>
+  <p class="error-message" data-bind="visible: error, text: error"></p>
+  <div class="panel table-panel">
+    <div class="responsive-table">
+    <table class="aegis-data-table">
+      <thead>
+        <tr>
+          <th>Customer ID</th>
+          <th>Holder type</th>
+          <th>KYC status</th>
+          <th>Risk</th>
+          <th>Risk country</th>
+          <th>Accounts</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: filteredCustomers">
+        <tr class="customer-row" data-bind="click: $parent.openCustomer">
+          <td data-label="Customer" data-bind="text: id"></td>
+          <td data-label="Holder type" data-bind="text: accountHolderType"></td>
+          <td data-label="KYC" data-bind="text: kycVerificationStatus"></td>
+          <td data-label="Risk"><span class="risk-pill" data-bind="text:riskLevel+' '+riskScore,css:$parent.riskClass(riskScore)"></span></td>
+          <td data-label="Risk country" data-bind="text: riskCountryFlag"></td>
+          <td data-label="Accounts" data-bind="text: accountCount"></td>
+          <td data-label="Created" data-bind="text: createdAt"></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>

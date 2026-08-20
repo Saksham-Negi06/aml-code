@@ -1,0 +1,63 @@
+<div class="page-view">
+  <div class="page-head">
+    <div>
+      <h1>AML alerts</h1>
+      <p>Prioritize, assign and disposition automatically generated alerts.</p>
+    </div>
+    <div class="page-actions"><oj-button chroming="outlined">Alert policies</oj-button></div>
+  </div>
+  <div class="panel table-panel">
+    <div class="table-toolbar">
+      <div></div>
+      <div class="filter-row"><select data-bind="value: severity" aria-label="Severity">
+          <option>All severities</option>
+          <option>CRITICAL</option>
+          <option>HIGH</option>
+          <option>MEDIUM</option>
+        </select><select data-bind="value: status" aria-label="Status">
+          <option>All statuses</option>
+          <option>NEW</option>
+          <option>UNDER REVIEW</option>
+          <option>ESCALATED</option>
+          <option>RESOLVED</option>
+        </select></div>
+    </div>
+    <table class="aegis-data-table">
+      <thead>
+        <tr>
+          <th>Alert</th>
+          <th>Customer</th>
+          <th>Transaction</th>
+          <th>Type</th>
+          <th>Severity</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Assigned</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: filtered">
+        <tr class="customer-row" data-bind="click: $parent.openAlert">
+          <td data-bind="text: id"></td>
+          <td data-bind="text: customer"></td>
+          <td data-bind="text: txn"></td>
+          <td data-bind="text: type"></td>
+          <td><span class="risk-pill" data-bind="text: severity, css: severity.toLowerCase()"></span></td>
+          <td data-bind="text: score"></td>
+          <td><span class="status" data-bind="text: status, css: status.toLowerCase().replace(/\s+/g, '-')"></span></td>
+          <td data-bind="text: analyst"></td>
+          <td data-bind="text: created"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="alert-scrim" data-bind="visible: selectedAlert, click: closeAlert"></div>
+  <aside class="alert-triage" data-bind="css: { 'is-open': selectedAlert }, with: selectedAlert" aria-label="Alert triage">
+    <button class="triage-close" data-bind="click: $parent.closeAlert" aria-label="Close">&times;</button>
+    <span class="triage-eyebrow">Alert triage</span><h2 data-bind="text: id"></h2><p data-bind="text: 'Generated from ' + txn"></p>
+    <div class="triage-stats"><div><small>Severity</small><b data-bind="text: severity"></b></div><div><small>Risk score</small><b data-bind="text: score + '/100'"></b></div><div><small>Status</small><b data-bind="text: status"></b></div></div>
+    <h3>Trigger reason</h3><div class="triage-reason"><b data-bind="text: type"></b><p>Risk signals exceeded configured thresholds and produced a traceable rule hit.</p></div>
+    <h3>Customer context</h3><div class="triage-context"><div><small>Customer</small><b data-bind="text: $parent.selectedCustomer() ? $parent.selectedCustomer().name : customer"></b></div><div><small>Customer risk</small><b data-bind="text: $parent.selectedCustomer() ? $parent.selectedCustomer().score + '/100' : '—'"></b></div><div><small>Transaction</small><b data-bind="text: txn"></b></div><div><small>Assigned</small><b data-bind="text: analyst"></b></div></div>
+    <h3>Triage action</h3><div class="triage-actions"><button data-bind="click: $parent.markFalsePositive">False positive</button><button data-bind="click: $parent.assignAnalyst">Assign analyst</button><button class="primary" data-bind="click: $parent.createInvestigation">Create investigation</button></div>
+  </aside>
+</div>

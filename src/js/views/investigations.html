@@ -1,0 +1,45 @@
+<div class="page-view">
+    <div class="page-head">
+        <div>
+            <h1>Investigations</h1>
+            <p>Manage cases from alert triage through resolution and reporting.</p>
+        </div>
+        <div class="page-actions"><oj-button chroming="callToAction" on-oj-action="[[create]]">+ Create
+                investigation</oj-button></div>
+    </div>
+    <div class="panel table-panel"><table class="aegis-data-table"><thead><tr><th>Investigation</th><th>Source alert</th><th>Customer</th><th>Investigator</th><th>Priority</th><th>Status</th><th>Created</th><th>Due date</th><th>Resolution</th></tr></thead><tbody data-bind="foreach: rows"><tr class="customer-row" data-bind="click: $parent.openInvestigation"><td data-bind="text: id"></td><td data-bind="text: alert"></td><td data-bind="text: customer"></td><td data-bind="text: owner"></td><td><span class="risk-pill" data-bind="text: priority, css: priority.toLowerCase()"></span></td><td><span class="status" data-bind="text: status, css: status.toLowerCase().replace(/\s+/g, '-')"></span></td><td data-bind="text: created"></td><td data-bind="text: due"></td><td data-bind="text: resolution"></td></tr></tbody></table></div>
+    <div class="alert-scrim" data-bind="visible: selectedInvestigation, click: closeInvestigation"></div>
+    <aside class="investigation-report" data-bind="css: { 'is-open': selectedInvestigation }, with: selectedInvestigation" aria-label="Investigation report">
+        <button class="triage-close" data-bind="click: $parent.closeInvestigation" aria-label="Close">&times;</button>
+        <span class="triage-eyebrow">Investigation</span>
+        <h2 data-bind="text: id"></h2>
+        <p data-bind="text: 'Created from ' + alert"></p>
+
+        <div class="investigation-stats">
+            <div><small>Priority</small><b class="risk-pill" data-bind="text: priority, css: $parent.priorityClass(priority)"></b></div>
+            <div><small>Status</small><b class="status" data-bind="text: status, css: $parent.statusClass(status)"></b></div>
+            <div><small>SLA due</small><b data-bind="text: due"></b></div>
+        </div>
+
+        <h3>Investigation context</h3>
+        <div class="triage-context investigation-context">
+            <div><small>Customer</small><b data-bind="text: $parent.selectedCustomer() ? $parent.selectedCustomer().name : customer"></b></div>
+            <div><small>Risk</small><b data-bind="text: $parent.selectedCustomer() ? $parent.selectedCustomer().score + '/100 ' + $parent.selectedCustomer().risk : '—'"></b></div>
+            <div><small>Owner</small><b data-bind="text: owner"></b></div>
+            <div><small>Resolution</small><b data-bind="text: resolution"></b></div>
+        </div>
+
+        <h3>Activity timeline</h3>
+        <ol class="investigation-timeline" data-bind="foreach: $parent.timeline">
+            <li><b data-bind="text: title"></b><span data-bind="text: detail"></span></li>
+        </ol>
+
+        <h3>Analyst notes</h3>
+        <textarea class="investigation-notes" data-bind="value: $parent.noteDraft" placeholder="Add an auditable investigation note..."></textarea>
+        <div class="triage-actions investigation-actions">
+            <button data-bind="click: $parent.addNote">Add note</button>
+            <button data-bind="click: $parent.escalate">Escalate</button>
+            <button class="primary" data-bind="click: $parent.resolve">Resolve case</button>
+        </div>
+    </aside>
+</div>

@@ -1,0 +1,66 @@
+<div class="page-view">
+  <div class="page-head dashboard-page-head">
+    <div class="page-actions">
+      <oj-button chroming="outlined" on-oj-action="[[exportSummary]]">Export summary</oj-button>
+      <oj-button chroming="callToAction" on-oj-action="[[screenTransaction]]">Screen transaction</oj-button>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <!-- ko foreach: metrics -->
+    <div class="metric-card">
+      <div class="metric-top">
+        <span data-bind="text: $data[0]"></span>
+        <span class="metric-icon">&diams;</span>
+      </div>
+      <strong data-bind="text: $data[1]"></strong>
+      <span class="trend" data-bind="text: $data[2], css: {warn: $data[3] === 'warn'}"></span>
+    </div>
+    <!-- /ko -->
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="panel trend-panel">
+      <div class="panel-head">
+        <h3>Recent transaction activity</h3>
+        <button class="plain-action">Last 14 days⌄</button>
+      </div>
+      <div class="risk-chart">
+        <!-- ko foreach: trend -->
+        <span class="bar-wrap"><i data-bind="style: {height: $data + '%'}"></i></span>
+        <!-- /ko -->
+      </div>
+      <div class="chart-labels">
+          <span>Latest 14 transactions</span>
+      </div>
+    </section>
+
+    <section class="panel distribution-panel">
+      <div class="panel-head">
+        <h3>Backend data</h3>
+        <button class="plain-action" data-bind="click: function(){ router.go('customers'); }">View customers</button>
+      </div>
+      <div class="donut-area">
+        <div class="donut">
+          <span><b data-bind="text: metrics().length ? metrics()[0][1] : '0'"></b>Customers</span>
+        </div>
+        <div class="legend">
+          <div>Customer, account, and transaction totals are loaded from the API.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel table-panel full-span">
+      <div class="table-toolbar">
+        <div class="panel-head table-head-title"><h3>Recent transactions</h3></div>
+      </div>
+
+      <table class="aegis-data-table">
+        <thead><tr><th>Transaction</th><th>Sender account</th><th>Receiver account</th><th>Amount</th><th>Currency</th><th>Payment type</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody data-bind="foreach: alerts">
+          <tr><td data-bind="text: transactionId"></td><td data-bind="text: senderAccountId"></td><td data-bind="text: receiverAccountId"></td><td data-bind="text: amount"></td><td data-bind="text: paymentCurrency"></td><td data-bind="text: paymentType"></td><td data-bind="text: status"></td><td data-bind="text: transactionDatetime"></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
