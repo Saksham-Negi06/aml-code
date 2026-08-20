@@ -1,0 +1,161 @@
+{
+  "pipeline_summary": {
+    "bagging_arm": "BalancedRandomForest",
+    "boosting_arm": "LightGBM_scale_pos_weight",
+    "ensemble_method": "Boosting only",
+    "chosen_threshold": 0.9574,
+    "chosen_threshold_objective": "max_recall_at_P>=0.5",
+    "no_smote_statement": "No SMOTE or synthetic oversampling was used anywhere in this pipeline. Class imbalance was handled via BalancedRandomForest on the bagging arm and scale_pos_weight on the boosting arm, with the operating threshold chosen via the validation PR curve rather than the default 0.5."
+  },
+  "bagging_arm_metrics": {
+    "BalancedRandomForest": {
+      "model": "BalancedRandomForest",
+      "pr_auc": 0.7458,
+      "recall_at_precision_0.5": 0.747911,
+      "recall_at_precision_0.8": 0.743733,
+      "f1_at_0.5_threshold": 0.006286,
+      "confusion_matrix_at_0.5": [
+        [
+          1025097,
+          403283
+        ],
+        [
+          160,
+          1276
+        ]
+      ],
+      "train_time_seconds": 929.3,
+      "best_cv_pr_auc": 0.975776,
+      "best_params": {
+        "n_estimators": 250,
+        "max_depth": 16,
+        "min_samples_leaf": 9,
+        "max_features": 0.3,
+        "sampling_strategy": "majority",
+        "random_state": 42,
+        "n_jobs": 11
+      }
+    }
+  },
+  "boosting_arm_metrics": {
+    "LightGBM_scale_pos_weight": {
+      "model": "LightGBM_scale_pos_weight",
+      "pr_auc": 0.749712,
+      "recall_at_precision_0.5": 0.752089,
+      "recall_at_precision_0.8": 0.752089,
+      "f1_at_0.5_threshold": 0.006464,
+      "confusion_matrix_at_0.5": [
+        [
+          1080108,
+          348272
+        ],
+        [
+          302,
+          1134
+        ]
+      ],
+      "train_time_seconds": 1012.7,
+      "best_cv_pr_auc": 0.983981,
+      "best_params": {
+        "learning_rate": 0.010103,
+        "num_leaves": 79,
+        "min_data_in_leaf": 18,
+        "subsample": 0.740995,
+        "colsample_bytree": 0.797372,
+        "scale_pos_weight": 983.435992,
+        "metric": "average_precision",
+        "random_state": 42,
+        "verbose": -1,
+        "n_jobs": 11
+      }
+    }
+  },
+  "ensemble_comparison": {
+    "Stacking (LR)": {
+      "pr_auc": 0.742121,
+      "recall_p50": 0.744429,
+      "recall_p80": 0.744429
+    },
+    "Stacking (LR weighted)": {
+      "pr_auc": 0.742128,
+      "recall_p50": 0.745125,
+      "recall_p80": 0.744429
+    },
+    "Soft Voting": {
+      "pr_auc": 0.742138,
+      "recall_p50": 0.744429,
+      "recall_p80": 0.744429
+    },
+    "Bagging only": {
+      "pr_auc": 0.7458,
+      "recall_p50": 0.747911,
+      "recall_p80": 0.743733
+    },
+    "Boosting only": {
+      "pr_auc": 0.749712,
+      "recall_p50": 0.752089,
+      "recall_p80": 0.752089
+    }
+  },
+  "threshold_candidates": {
+    "max_recall_at_P>=0.5": {
+      "threshold": 0.9574,
+      "precision": 0.6349,
+      "recall": 0.7521,
+      "f1": 0.6886
+    },
+    "max_recall_at_P>=0.8": {
+      "threshold": 0.9582,
+      "precision": 0.9359,
+      "recall": 0.7521,
+      "f1": 0.834
+    },
+    "max_F1": {
+      "threshold": 0.9589,
+      "precision": 0.9791,
+      "recall": 0.7521,
+      "f1": 0.8507
+    }
+  },
+  "final_chosen_threshold": {
+    "threshold": 0.9574,
+    "objective": "max_recall_at_P>=0.5",
+    "business_rationale": "AML compliance \u2014 recall-biased, missing fraud worse than false positive for human review"
+  },
+  "test_set_results": {
+    "pr_auc": 0.7595,
+    "recall_at_precision_0.5": 0.7599,
+    "recall_at_precision_0.8": 0.7599,
+    "precision_at_chosen_threshold": 0.7655,
+    "recall_at_chosen_threshold": 0.7599,
+    "f1_at_chosen_threshold": 0.7627,
+    "confusion_matrix": [
+      [
+        1382786,
+        382
+      ],
+      [
+        394,
+        1247
+      ]
+    ],
+    "note": "These numbers came from a single held-out test-set touch, not from validation."
+  },
+  "shap_top_15": {
+    "receiver_unique_senders": 2.137101,
+    "sender_min_amount": 1.945968,
+    "sender_unique_receivers": 0.928844,
+    "receiver_tx_count": 0.223269,
+    "sender_tx_count": 0.113105,
+    "sender_std_amount": 0.097476,
+    "sender_max_amount": 0.088968,
+    "Amount": 0.076207,
+    "sender_avg_amount": 0.053927,
+    "currency_mismatch": 0.037079,
+    "receiver_avg_amount": 0.035923,
+    "Payment_type_encoded": 0.034845,
+    "amount_to_sender_max_ratio": 0.025578,
+    "day_of_month": 0.016703,
+    "is_cross_border": 0.013259
+  }
+}

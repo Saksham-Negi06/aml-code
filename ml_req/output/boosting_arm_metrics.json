@@ -1,0 +1,103 @@
+{
+  "winner": "LightGBM_scale_pos_weight",
+  "scale_pos_weight": 983.44,
+  "class_counts": {
+    "positive": 6796,
+    "negative": 6683431
+  },
+  "diversity_correlation_with_bagging": 0.7523,
+  "XGBoost_scale_pos_weight": {
+    "model": "XGBoost_scale_pos_weight",
+    "pr_auc": 0.52508,
+    "recall_at_precision_0.5": 0.656685,
+    "recall_at_precision_0.8": 0.642061,
+    "f1_at_0.5_threshold": 0.005057,
+    "confusion_matrix_at_0.5": [
+      [
+        953238,
+        475142
+      ],
+      [
+        228,
+        1208
+      ]
+    ],
+    "train_time_seconds": 1172.7,
+    "best_cv_pr_auc": 0.984197,
+    "best_params": {
+      "learning_rate": 0.0690341975945219,
+      "max_depth": 4,
+      "min_child_weight": 41,
+      "subsample": 0.9049581122536642,
+      "colsample_bytree": 0.7674393954814913,
+      "scale_pos_weight": 983.44,
+      "eval_metric": "aucpr",
+      "tree_method": "hist",
+      "nthread": 11,
+      "random_state": 42,
+      "verbosity": 0
+    }
+  },
+  "LightGBM_scale_pos_weight": {
+    "model": "LightGBM_scale_pos_weight",
+    "pr_auc": 0.749712,
+    "recall_at_precision_0.5": 0.752089,
+    "recall_at_precision_0.8": 0.752089,
+    "f1_at_0.5_threshold": 0.006464,
+    "confusion_matrix_at_0.5": [
+      [
+        1080108,
+        348272
+      ],
+      [
+        302,
+        1134
+      ]
+    ],
+    "train_time_seconds": 1012.7,
+    "best_cv_pr_auc": 0.983981,
+    "best_params": {
+      "learning_rate": 0.010103,
+      "num_leaves": 79,
+      "min_data_in_leaf": 18,
+      "subsample": 0.740995,
+      "colsample_bytree": 0.797372,
+      "scale_pos_weight": 983.435992,
+      "metric": "average_precision",
+      "random_state": 42,
+      "verbose": -1,
+      "n_jobs": 11
+    }
+  },
+  "LightGBM_is_unbalance": {
+    "model": "LightGBM_is_unbalance",
+    "pr_auc": 0.465848,
+    "recall_at_precision_0.5": 0.718663,
+    "recall_at_precision_0.8": 0.0,
+    "f1_at_0.5_threshold": 0.007872,
+    "confusion_matrix_at_0.5": [
+      [
+        1138045,
+        290335
+      ],
+      [
+        283,
+        1153
+      ]
+    ],
+    "train_time_seconds": 1933.9,
+    "best_cv_pr_auc": 0.983646,
+    "best_params": {
+      "learning_rate": 0.014435,
+      "num_leaves": 28,
+      "min_data_in_leaf": 32,
+      "subsample": 0.786671,
+      "colsample_bytree": 0.671687,
+      "is_unbalance": true,
+      "metric": "average_precision",
+      "random_state": 42,
+      "verbose": -1,
+      "n_jobs": 11
+    }
+  }
+}
