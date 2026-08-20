@@ -95,6 +95,20 @@ define([
     self.alertCount = ko.observable(9);
     self.currentUser = ko.observable({ name: 'Jeel Doshi', role: 'Senior compliance', initials: 'JD' });
 
+    self.wireBrandHome = function () {
+      var brandHome = document.querySelector('.sidebar-brand');
+      if (!brandHome || brandHome.dataset.homeLinkBound) return;
+      brandHome.dataset.homeLinkBound = 'true';
+      brandHome.classList.add('brand-home');
+      brandHome.setAttribute('role', 'button');
+      brandHome.setAttribute('tabindex', '0');
+      brandHome.setAttribute('aria-label', 'Go to dashboard');
+      brandHome.addEventListener('click', function () { self.goHome(); });
+      brandHome.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); self.goHome(); }
+      });
+    };
+
     // The compact shell uses a native input, so connect it to the observable
     // shared with each routed view.
     window.setTimeout(function () {
@@ -107,6 +121,7 @@ define([
         menu.addEventListener('click', function () { self.openMenu(); }); topbar.insertBefore(menu, topbar.firstChild);
         self.mobileMenuOpen.subscribe(function (open) { sidebar.classList.toggle('open', open); });
       }
+      self.wireBrandHome();
     }, 0);
 
     self.announce = function (data, event) {
@@ -133,8 +148,15 @@ define([
       self.mobileMenuOpen(false);
     };
 
+    self.goHome = function () {
+      self.activeView('dashboard');
+      self.router.go('dashboard');
+      self.mobileMenuOpen(false);
+    };
+
     self.login = function () {
       self.isAuthenticated(true);
+      window.setTimeout(self.wireBrandHome, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
       self.showToast('Secure session started');
@@ -158,6 +180,7 @@ define([
       self.userLogin(self.signupEmail().trim());
       self.currentUser({ name: self.signupName().trim(), role: 'Compliance analyst', initials: self.signupName().trim().slice(0, 2).toUpperCase() });
       self.isAuthenticated(true);
+      window.setTimeout(self.wireBrandHome, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
       self.showToast('Your secure workspace is ready');

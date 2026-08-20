@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
  Copyright (c) 2014, 2024, Oracle and/or its affiliates.
  Licensed under The Universal Permissive License (UPL), Version 1.0
@@ -26,76 +26,280 @@
   section to represent the appropriate content type.
   ***************************** IMPORTANT INFORMATION ************************************ -->
 <html lang="en-us">
+  <head>
+    <title>Oracle JET Starter Template - Web Nav Drawer</title>
 
-<head>
-  <title>Oracle JET Starter Template - Web Nav Drawer</title>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1"
+    />
+    <link
+      rel="icon"
+      href="css/images/JET-Favicon-Red-32x32.png"
+      type="image/x-icon"
+    />
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
-  <link rel="icon" href="css/images/JET-Favicon-Red-32x32.png" type="image/x-icon" />
+    <!-- This is the main css file for the default theme -->
+    <!-- injector:theme -->
+    <link
+      rel="stylesheet"
+      href="css/redwood/16.1.8/web/redwood.css"
+      type="text/css"
+    />
+    <!-- endinjector -->
 
-  <!-- This is the main css file for the default theme -->
-  <!-- injector:theme -->
-  <link rel="stylesheet" href="css/redwood/16.1.8/web/redwood.css" type="text/css" />
-  <!-- endinjector -->
+    <!-- This contains icon fonts used by the starter template -->
+    <link
+      rel="stylesheet"
+      id="uxiconFont"
+      href="https://static.oracle.com/cdn/fnd/gallery/2404.0.0/images/iconfont/ojuxIconFont.min.css"
+    />
 
-  <!-- This contains icon fonts used by the starter template -->
-  <link rel="stylesheet" id="uxiconFont"
-    href="https://static.oracle.com/cdn/fnd/gallery/2404.0.0/images/iconfont/ojuxIconFont.min.css">
+    <!-- App typography: DM Sans (body) + Manrope (headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&display=swap"
+    />
 
-  <!-- This is where you would add any app specific styling -->
-  <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <!-- This is where you would add any app specific styling -->
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+  </head>
 
-</head>
-
-<body class="oj-web-applayout-body">
-  <!-- Template for rendering navigation items shared between nav bar and nav list -->
-  <script type="text/html" id="navTemplate">
-      <li><a href="#">
-        <span :class="[[$data.detail.iconClass]]"></span>
-        <oj-bind-text value="[[$data.detail.label]]"></oj-bind-text>
-      </a></li>
+  <body class="oj-web-applayout-body">
+    <!-- Template for rendering navigation items shared between nav bar and nav list -->
+    <script type="text/html" id="navTemplate">
+      <li>
+        <a href="#">
+          <span :class="[[$data.detail.iconClass]]"></span>
+          <oj-bind-text value="[[$data.detail.label]]"></oj-bind-text>
+        </a>
+      </li>
     </script>
 
-  <div id="globalBody" data-bind="event: { announce: announce }">
-    <main class="login-view" data-bind="visible: !isAuthenticated()">
-      <section class="login-art" aria-label="Aegis AML overview">
-        <div class="brand brand-light"><span class="brand-mark">A</span><span>Aegis <b>AML</b></span></div>
-        <div class="login-copy"><span class="eyebrow light">Intelligent compliance</span><h1>See the signal.<br>Stop the risk.</h1><p>One secure workspace for monitoring transactions, investigating alerts, and filing defensible reports.</p></div>
-        <div class="signal-card"><div class="signal-head"><b>Live detection</b><span class="live-dot">Operational</span></div><div class="signal-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="signal-foot"><span>Rule engine</span><b>99.98% uptime</b></div></div>
-        <div class="security-note">SOC 2 aligned&nbsp; · &nbsp;Privacy-first&nbsp; · &nbsp;PII-free</div>
-      </section>
-      <section class="login-panel">
-        <form class="login-form" data-bind="submit: authMode() === 'login' ? login : signup">
-          <span class="eyebrow" data-bind="text: authMode() === 'login' ? 'Secure access' : 'Create secure access'"></span>
-          <!-- ko if: authMode() === 'login' -->
-          <h2>Welcome back</h2><p>Sign in to your compliance workspace.</p>
-          <div class="label-row"><label for="login-username">Username</label></div><input id="login-username" class="auth-input" data-bind="value: username" autocomplete="username">
-          <div class="label-row"><label for="login-password">Password</label><button type="button" class="text-button" data-bind="click: forgotPassword">Forgot password?</button></div><div class="password-row"><input id="login-password" class="native-password" data-bind="value: password, attr: { type: passwordVisible() ? 'text' : 'password' }" autocomplete="current-password"><button type="button" class="text-button" data-bind="click: togglePassword, text: passwordVisible() ? 'Hide' : 'Show'"></button></div>
-          <label class="keep-signed"><input type="checkbox" checked> Keep me signed in on this device</label>
-          <button class="auth-submit" type="submit">Sign in securely <span>→</span></button>
-          <p class="demo-note">Demo access is pre-filled. Any credentials work in preview mode.</p>
-          <p class="auth-switch">New to Aegis? <button type="button" data-bind="click: showSignup">Create an account</button></p>
-          <!-- /ko -->
-          <!-- ko if: authMode() === 'signup' -->
-          <h2>Create your account</h2><p>Set up access to your compliance workspace.</p>
-          <div class="label-row"><label for="signup-name">Full name</label></div><input id="signup-name" class="auth-input" data-bind="value: signupName" autocomplete="name">
-          <div class="label-row"><label for="signup-email">Work email</label></div><input id="signup-email" class="auth-input" data-bind="value: signupEmail" type="email" autocomplete="email">
-          <div class="label-row"><label for="signup-password">Password</label></div><div class="password-row"><input id="signup-password" class="native-password" data-bind="value: signupPassword" type="password" autocomplete="new-password"></div>
-          <p class="auth-message" data-bind="visible: authMessage, text: authMessage"></p><button class="auth-submit" type="submit">Create secure account <span>→</span></button>
-          <p class="auth-switch">Already have access? <button type="button" data-bind="click: showLogin">Sign in</button></p>
-          <!-- /ko -->
-        </form>
-      </section>
-    </main>
-    <!-- ko if: isAuthenticated -->
+    <div id="globalBody" data-bind="event: { announce: announce }">
+      <main class="login-view" data-bind="visible: !isAuthenticated()">
+        <section class="login-art" aria-label="AML overview">
+          <div class="brand brand-light">
+            <span class="brand-mark">A</span><span><b>AML</b></span>
+          </div>
+          <div class="login-copy">
+            <span class="eyebrow light">Intelligent compliance</span>
+            <h1>See the signal.<br />Stop the risk.</h1>
+            <p>
+              One secure workspace for monitoring transactions, investigating
+              alerts, and filing defensible reports.
+            </p>
+          </div>
+          <div class="signal-card">
+            <div class="signal-head">
+              <b>Live detection</b><span class="live-dot">Operational</span>
+            </div>
+            <div class="signal-bars">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="signal-foot">
+              <span>Rule engine</span><b>99.98% uptime</b>
+            </div>
+          </div>
+          <div class="security-note">
+            SOC 2 aligned&nbsp; · &nbsp;Privacy-first&nbsp; · &nbsp;PII-free
+          </div>
+        </section>
+        <section class="login-panel">
+          <form
+            class="login-form"
+            data-bind="submit: authMode() === 'login' ? login : signup"
+          >
+            <span
+              class="eyebrow"
+              data-bind="text: authMode() === 'login' ? 'Secure access' : 'Create secure access'"
+            ></span>
+            <!-- ko if: authMode() === 'login' -->
+            <h2>Welcome back</h2>
+            <p>Sign in to your compliance workspace.</p>
+            <div class="label-row">
+              <label for="login-username">Username</label>
+            </div>
+            <input
+              id="login-username"
+              class="auth-input"
+              data-bind="value: username"
+              autocomplete="username"
+            />
+            <div class="label-row">
+              <label for="login-password">Password</label
+              ><button
+                type="button"
+                class="text-button"
+                data-bind="click: forgotPassword"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <div class="password-row">
+              <input
+                id="login-password"
+                class="native-password"
+                data-bind="value: password, attr: { type: passwordVisible() ? 'text' : 'password' }"
+                autocomplete="current-password"
+              /><button
+                type="button"
+                class="text-button"
+                data-bind="click: togglePassword, text: passwordVisible() ? 'Hide' : 'Show'"
+              ></button>
+            </div>
+            <label class="keep-signed"
+              ><input type="checkbox" checked /> Keep me signed in on this
+              device</label
+            >
+            <button class="auth-submit" type="submit">
+              Sign in securely <span>→</span>
+            </button>
+            <p class="demo-note">
+              Demo access is pre-filled. Any credentials work in preview mode.
+            </p>
+            <p class="auth-switch">
+              New to Aegis?
+              <button type="button" data-bind="click: showSignup">
+                Create an account
+              </button>
+            </p>
+            <!-- /ko -->
+            <!-- ko if: authMode() === 'signup' -->
+            <h2>Create your account</h2>
+            <p>Set up access to your compliance workspace.</p>
+            <div class="label-row">
+              <label for="signup-name">Full name</label>
+            </div>
+            <input
+              id="signup-name"
+              class="auth-input"
+              data-bind="value: signupName"
+              autocomplete="name"
+            />
+            <div class="label-row">
+              <label for="signup-email">Work email</label>
+            </div>
+            <input
+              id="signup-email"
+              class="auth-input"
+              data-bind="value: signupEmail"
+              type="email"
+              autocomplete="email"
+            />
+            <div class="label-row">
+              <label for="signup-password">Password</label>
+            </div>
+            <div class="password-row">
+              <input
+                id="signup-password"
+                class="native-password"
+                data-bind="value: signupPassword"
+                type="password"
+                autocomplete="new-password"
+              />
+            </div>
+            <p
+              class="auth-message"
+              data-bind="visible: authMessage, text: authMessage"
+            ></p>
+            <button class="auth-submit" type="submit">
+              Create secure account <span>→</span>
+            </button>
+            <p class="auth-switch">
+              Already have access?
+              <button type="button" data-bind="click: showLogin">
+                Sign in
+              </button>
+            </p>
+            <!-- /ko -->
+          </form>
+        </section>
+      </main>
+      <!-- ko if: isAuthenticated -->
 
-    <div id="announce" tabindex="-1" class="send-off-screen" :aria-live="[[manner]]" aria-atomic="true">
-      <p id="ariaLiveMessage"><oj-bind-text value="[[message]]"></oj-bind-text></p>
-    </div>
-    <div class="aegis-root"><div class="app-view"><aside class="sidebar"><div class="brand sidebar-brand"><span class="brand-mark">A</span><span>Aegis <b>AML</b></span></div><nav class="aegis-navigation" data-bind="foreach: navItems" aria-label="Primary navigation"><a href="#" class="aegis-nav-link" data-bind="click: $root.goToRoute, css: { 'active-nav': $root.router.stateId() === path }"><span class="nav-icon" data-bind="text: detail.iconClass === 'oj-ux-ico-home' ? '⌂' : detail.iconClass === 'oj-ux-ico-contact' ? '◎' : detail.iconClass === 'oj-ux-ico-arrow-switch' ? '↔' : detail.iconClass === 'oj-ux-ico-warning' ? '!' : detail.iconClass === 'oj-ux-ico-task' ? '▣' : '▤'"></span><span class="nav-text" data-bind="text: detail.label"></span><!-- ko if: detail.badge --><span class="nav-badge" data-bind="text: detail.badge"></span><!-- /ko --></a></nav><div class="sidebar-foot"><div class="user-card"><div class="avatar" data-bind="text: currentUser().initials"></div><div class="user-copy"><b data-bind="text: currentUser().name"></b><small data-bind="text: currentUser().role"></small></div><button class="logout-btn" data-bind="click: logout" aria-label="Sign out">↪</button></div></div></aside><main class="main"><header class="topbar"><div class="search"><span>⌕</span><input aria-label="Search cases, accounts, transactions" placeholder="Search cases, accounts, transactions..."><kbd>⌘<br>K</kbd></div><div class="top-actions"><span class="system-status"><i></i>All systems operational</span><button class="help-button" data-bind="click: showHelp">?</button><button class="notification-button" data-bind="click: showNotifications">⌁<span class="notification-dot"></span></button></div></header><div class="content"><oj-module role="main" config="[[moduleAdapter.koObservableConfig]]"></oj-module></div></main></div></div>
+      <div
+        id="announce"
+        tabindex="-1"
+        class="send-off-screen"
+        :aria-live="[[manner]]"
+        aria-atomic="true"
+      >
+        <p id="ariaLiveMessage">
+          <oj-bind-text value="[[message]]"></oj-bind-text>
+        </p>
+      </div>
+      <div class="aegis-root">
+        <div class="app-view">
+          <aside class="sidebar">
+            <div class="brand sidebar-brand">
+              <span class="brand-mark">A</span><span>Aegis <b>AML</b></span>
+            </div>
+            <nav
+              class="aegis-navigation"
+              data-bind="foreach: navItems"
+              aria-label="Primary navigation"
+            >
+              <a
+                href="#"
+                class="aegis-nav-link"
+                data-bind="click: $root.goToRoute, css: { 'active-nav': $root.router.stateId() === path }"
+                ><span
+                  class="nav-icon"
+                  data-bind="text: detail.iconClass === 'oj-ux-ico-home' ? '⌂' : detail.iconClass === 'oj-ux-ico-contact' ? '◎' : detail.iconClass === 'oj-ux-ico-arrow-switch' ? '↔' : detail.iconClass === 'oj-ux-ico-warning' ? '!' : detail.iconClass === 'oj-ux-ico-task' ? '▣' : '▤'"
+                ></span
+                ><span class="nav-text" data-bind="text: detail.label"></span
+                ><!-- ko if: detail.badge --><span
+                  class="nav-badge"
+                  data-bind="text: detail.badge"
+                ></span
+                ><!-- /ko --></a
+              >
+            </nav>
+            <div class="sidebar-foot">
+              <div class="user-card">
+                <div
+                  class="avatar"
+                  data-bind="text: currentUser().initials"
+                ></div>
+                <div class="user-copy">
+                  <b data-bind="text: currentUser().name"></b
+                  ><small data-bind="text: currentUser().role"></small>
+                </div>
+                <button
+                  class="logout-btn"
+                  data-bind="click: logout"
+                  aria-label="Sign out"
+                >
+                  ↪
+                </button>
+              </div>
+            </div>
+          </aside>
+          <main class="main">
+            <header class="topbar">
+              <div class="search">
+                <span>⌕</span
+                ><input
+                  aria-label="Search cases, accounts, transactions"
+                  placeholder="Search cases, accounts, transactions..."
+                />
+              </div>
+            </header>
+            <div class="content">
+              <oj-module
+                role="main"
+                config="[[moduleAdapter.koObservableConfig]]"
+              ></oj-module>
+            </div>
+          </main>
+        </div>
+      </div>
 
-    <!--
+      <!--
          ** Oracle JET V16.1.0 web application navigation drawer pattern.
          ** Please see the demos under Cookbook/Patterns/App Shell: Web
          ** and the CSS documentation under Support/API Docs/Non-Component Styling
@@ -104,89 +308,143 @@
          ** query size for a phone format and hidden until a user clicks on
          ** the header hamburger icon.
       -->
-    <oj-drawer-popup id="navDrawer" edge="start" opened="{{sideDrawerOn}}" modality="modeless" role="navigation"
-      class="oj-bg-neutral-170 oj-color-invert">
-      <oj-navigation-list id="navDrawerList" data="[[navDataProvider]]" edge="start"
-        item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]" on-click="[[toggleDrawer]]"
-        selection="{{selection.path}}">
-      </oj-navigation-list>
-    </oj-drawer-popup>
-    <div id="pageContent" class="oj-web-applayout-page">
-      <!--
+      <oj-drawer-popup
+        id="navDrawer"
+        edge="start"
+        opened="{{sideDrawerOn}}"
+        modality="modeless"
+        role="navigation"
+        class="oj-bg-neutral-170 oj-color-invert"
+      >
+        <oj-navigation-list
+          id="navDrawerList"
+          data="[[navDataProvider]]"
+          edge="start"
+          item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"
+          on-click="[[toggleDrawer]]"
+          selection="{{selection.path}}"
+        >
+        </oj-navigation-list>
+      </oj-drawer-popup>
+      <div id="pageContent" class="oj-web-applayout-page">
+        <!--
            ** Oracle JET V16.1.0 web application header pattern.
            ** Please see the demos under Cookbook/Patterns/App Shell: Web
            ** and the CSS documentation under Support/API Docs/Non-Component Styling
            ** on the JET website for more information on how to use this pattern.
         -->
-      <header role="banner" class="oj-web-applayout-header">
-        <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
-          <!-- Drawer toggle button -->
-          <div class="oj-flex-bar-start oj-md-hide">
-            <oj-button id="drawerToggleButton" class="oj-button-lg" on-oj-action="[[toggleDrawer]]"
-              chroming="borderless" display="icons">
-              <span slot="startIcon" class="oj-web-applayout-offcanvas-icon"></span>
-              <span>Application Navigation</span>
-            </oj-button>
+        <header role="banner" class="oj-web-applayout-header">
+          <div
+            class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center"
+          >
+            <!-- Drawer toggle button -->
+            <div class="oj-flex-bar-start oj-md-hide">
+              <oj-button
+                id="drawerToggleButton"
+                class="oj-button-lg"
+                on-oj-action="[[toggleDrawer]]"
+                chroming="borderless"
+                display="icons"
+              >
+                <span
+                  slot="startIcon"
+                  class="oj-web-applayout-offcanvas-icon"
+                ></span>
+                <span>Application Navigation</span>
+              </oj-button>
+            </div>
+            <div class="oj-flex-bar-middle oj-sm-align-items-baseline">
+              <span
+                role="img"
+                class="oj-icon demo-oracle-icon"
+                title="Oracle Logo"
+                alt="Oracle Logo"
+              ></span>
+              <h1
+                class="oj-sm-only-hide oj-web-applayout-header-title"
+                title="Application Name"
+              >
+                <oj-bind-text value="[[appName]]"></oj-bind-text>
+              </h1>
+            </div>
+            <div class="oj-flex-bar-end">
+              <!-- Responsive Toolbar -->
+              <oj-toolbar>
+                <oj-menu-button
+                  id="userMenu"
+                  display="[[smScreen() ? 'icons' : 'all']]"
+                  chroming="borderless"
+                >
+                  <span
+                    ><oj-bind-text value="[[userLogin]]"></oj-bind-text
+                  ></span>
+                  <span
+                    slot="endIcon"
+                    :class="[[{'oj-icon demo-appheader-avatar': smScreen(), 'oj-component-icon oj-button-menu-dropdown-icon': !smScreen()}]]"
+                  ></span>
+                  <oj-menu id="menu1" slot="menu">
+                    <oj-option id="pref" value="pref">Preferences</oj-option>
+                    <oj-option id="help" value="help">Help</oj-option>
+                    <oj-option id="about" value="about">About</oj-option>
+                    <oj-option id="out" value="out">Sign Out</oj-option>
+                  </oj-menu>
+                </oj-menu-button>
+              </oj-toolbar>
+            </div>
           </div>
-          <div class="oj-flex-bar-middle oj-sm-align-items-baseline">
-            <span role="img" class="oj-icon demo-oracle-icon" title="Oracle Logo" alt="Oracle Logo"></span>
-            <h1 class="oj-sm-only-hide oj-web-applayout-header-title" title="Application Name"><oj-bind-text
-                value="[[appName]]"></oj-bind-text></h1>
+          <div
+            role="navigation"
+            class="oj-web-applayout-max-width oj-web-applayout-navbar"
+          >
+            <oj-navigation-list
+              id="navTabBar"
+              class="oj-sm-only-hide oj-md-condense oj-md-justify-content-flex-end"
+              data="[[navDataProvider]]"
+              edge="top"
+              item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"
+              selection="{{selection.path}}"
+            >
+            </oj-navigation-list>
           </div>
-          <div class="oj-flex-bar-end">
-            <!-- Responsive Toolbar -->
-            <oj-toolbar>
-              <oj-menu-button id="userMenu" display="[[smScreen() ? 'icons' : 'all']]" chroming="borderless">
-                <span><oj-bind-text value="[[userLogin]]"></oj-bind-text></span>
-                <span slot="endIcon"
-                  :class="[[{'oj-icon demo-appheader-avatar': smScreen(), 'oj-component-icon oj-button-menu-dropdown-icon': !smScreen()}]]"></span>
-                <oj-menu id="menu1" slot="menu">
-                  <oj-option id="pref" value="pref">Preferences</oj-option>
-                  <oj-option id="help" value="help">Help</oj-option>
-                  <oj-option id="about" value="about">About</oj-option>
-                  <oj-option id="out" value="out">Sign Out</oj-option>
-                </oj-menu>
-              </oj-menu-button>
-            </oj-toolbar>
+        </header>
+        <oj-module
+          role="main"
+          class="oj-web-applayout-max-width oj-web-applayout-content"
+          aria-hidden="true"
+        >
+        </oj-module>
+        <footer class="oj-web-applayout-footer" role="contentinfo">
+          <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">
+            <ul>
+              <oj-bind-for-each data="[[footerLinks]]">
+                <template>
+                  <li>
+                    <a
+                      :id="[[$current.data.linkId]]"
+                      :href="[[$current.data.linkTarget]]"
+                    >
+                      <oj-bind-text
+                        value="[[$current.data.name]]"
+                      ></oj-bind-text>
+                    </a>
+                  </li>
+                </template>
+              </oj-bind-for-each>
+            </ul>
           </div>
-        </div>
-        <div role="navigation" class="oj-web-applayout-max-width oj-web-applayout-navbar">
-          <oj-navigation-list id="navTabBar" class="oj-sm-only-hide oj-md-condense oj-md-justify-content-flex-end"
-            data="[[navDataProvider]]" edge="top"
-            item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]" selection="{{selection.path}}">
-          </oj-navigation-list>
-        </div>
-      </header>
-      <oj-module role="main" class="oj-web-applayout-max-width oj-web-applayout-content"
-        aria-hidden="true">
-      </oj-module>
-      <footer class="oj-web-applayout-footer" role="contentinfo">
-        <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">
-          <ul>
-            <oj-bind-for-each data="[[footerLinks]]">
-              <template>
-                <li>
-                  <a :id="[[$current.data.linkId]]" :href="[[$current.data.linkTarget]]">
-                    <oj-bind-text value="[[$current.data.name]]"></oj-bind-text>
-                  </a>
-                </li>
-              </template>
-            </oj-bind-for-each>
-          </ul>
-        </div>
-        <div
-          class="oj-web-applayout-footer-item oj-web-applayout-max-width oj-text-color-secondary oj-typography-body-sm">
-          Copyright © 2014, 2024 Oracle and/or its affiliates All rights reserved.
-        </div>
-      </footer>
+          <div
+            class="oj-web-applayout-footer-item oj-web-applayout-max-width oj-text-color-secondary oj-typography-body-sm"
+          >
+            Copyright © 2014, 2024 Oracle and/or its affiliates All rights
+            reserved.
+          </div>
+        </footer>
+      </div>
+      <!-- /ko -->
     </div>
-    <!-- /ko -->
-  </div>
 
-  <!-- This injects script tags for the main javascript files -->
-  <!-- injector:scripts -->
-  <!-- endinjector -->
-
-</body>
-
+    <!-- This injects script tags for the main javascript files -->
+    <!-- injector:scripts -->
+    <!-- endinjector -->
+  </body>
 </html>
