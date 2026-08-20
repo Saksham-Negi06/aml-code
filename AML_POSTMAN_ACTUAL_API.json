@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "7a91b220-16b7-4b25-9dc4-aml-actual-api",
+    "name": "AML System - Actual Implemented API",
+    "description": "All 16 routes implemented by the transaction service. Run requests in collection order. Defaults to direct service access on port 8081; change base_url to http://localhost:8080 to test through the gateway.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8081" },
+    { "key": "customer_id", "value": "" },
+    { "key": "sender_customer_id", "value": "" },
+    { "key": "receiver_customer_id", "value": "" },
+    { "key": "account_id", "value": "" },
+    { "key": "sender_account_id", "value": "" },
+    { "key": "receiver_account_id", "value": "" },
+    { "key": "sender_account_raw", "value": "POSTMAN-SENDER-001" },
+    { "key": "receiver_account_raw", "value": "POSTMAN-RECEIVER-001" },
+    { "key": "transaction_internal_id", "value": "" },
+    { "key": "transaction_business_id", "value": "POSTMAN-TXN-001" },
+    { "key": "delete_customer_id", "value": "" },
+    { "key": "delete_account_id", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Response is JSON', function () { pm.response.to.be.json; });",
+          "pm.test('Request succeeded', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Customers",
+      "item": [
+        {
+          "name": "Create Sender Customer",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('sender_customer_id', body.data.id);", "pm.collectionVariables.set('customer_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountHolderType\": \"INDIVIDUAL\",\n  \"kycVerificationStatus\": \"VERIFIED\",\n  \"riskCountryFlag\": false\n}" }, "url": "{{base_url}}/api/v1/customers" }
+        },
+        {
+          "name": "Create Receiver Customer",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('receiver_customer_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountHolderType\": \"BUSINESS\",\n  \"kycVerificationStatus\": \"VERIFIED\",\n  \"riskCountryFlag\": true\n}" }, "url": "{{base_url}}/api/v1/customers" }
+        },
+        { "name": "Get All Customers", "request": { "method": "GET", "url": "{{base_url}}/api/v1/customers" } },
+        { "name": "Get Customer By ID", "request": { "method": "GET", "url": "{{base_url}}/api/v1/customers/{{customer_id}}" } },
+        {
+          "name": "Update Customer",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountHolderType\": \"INDIVIDUAL\",\n  \"kycVerificationStatus\": \"REVIEWED\",\n  \"riskCountryFlag\": false\n}" }, "url": "{{base_url}}/api/v1/customers/{{customer_id}}" }
+        }
+      ]
+    },
+    {
+      "name": "2. Accounts",
+      "item": [
+        {
+          "name": "Create Sender Account",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('sender_account_id', body.data.id);", "pm.collectionVariables.set('account_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountId\": \"{{sender_account_raw}}\",\n  \"customerId\": \"{{sender_customer_id}}\",\n  \"accountType\": \"SAVINGS\",\n  \"bankLocation\": \"IN\",\n  \"accountRiskScore\": 10.5,\n  \"avgTransactionAmount\": 1000,\n  \"avgTransactionsPerMonth\": 12,\n  \"accountAgeDays\": 900,\n  \"isFlagged\": false\n}" }, "url": "{{base_url}}/api/v1/accounts" }
+        },
+        {
+          "name": "Create Receiver Account",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('receiver_account_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountId\": \"{{receiver_account_raw}}\",\n  \"customerId\": \"{{receiver_customer_id}}\",\n  \"accountType\": \"CURRENT\",\n  \"bankLocation\": \"AE\",\n  \"accountRiskScore\": 70,\n  \"avgTransactionAmount\": 5000,\n  \"avgTransactionsPerMonth\": 30,\n  \"accountAgeDays\": 400,\n  \"isFlagged\": false\n}" }, "url": "{{base_url}}/api/v1/accounts" }
+        },
+        { "name": "Get All Accounts", "request": { "method": "GET", "url": "{{base_url}}/api/v1/accounts" } },
+        { "name": "Get Account By ID", "request": { "method": "GET", "url": "{{base_url}}/api/v1/accounts/{{account_id}}" } },
+        {
+          "name": "Update Account",
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"bankLocation\": \"IN\",\n  \"accountRiskScore\": 15,\n  \"avgTransactionAmount\": 1200,\n  \"avgTransactionsPerMonth\": 14,\n  \"accountAgeDays\": 901,\n  \"isFlagged\": false\n}" }, "url": "{{base_url}}/api/v1/accounts/{{account_id}}" }
+        }
+      ]
+    },
+    {
+      "name": "3. Transactions",
+      "item": [
+        {
+          "name": "Create Transaction",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('transaction_internal_id', body.data.id);", "pm.collectionVariables.set('transaction_business_id', body.data.transactionId);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"transaction_id\": \"{{transaction_business_id}}\",\n  \"sender_account\": \"{{sender_account_raw}}\",\n  \"receiver_account\": \"{{receiver_account_raw}}\",\n  \"amount\": 25000.00,\n  \"payment_currency\": \"USD\",\n  \"received_currency\": \"USD\",\n  \"sender_bank_location\": \"IN\",\n  \"receiver_bank_location\": \"AE\",\n  \"payment_type\": \"WIRE_TRANSFER\",\n  \"transaction_datetime\": \"2026-08-20T10:30:00Z\",\n  \"use_gemini\": false\n}" }, "url": "{{base_url}}/api/v1/transactions" }
+        },
+        { "name": "Get All Transactions", "request": { "method": "GET", "url": "{{base_url}}/api/v1/transactions" } },
+        { "name": "Get Transaction By Internal ID", "request": { "method": "GET", "url": "{{base_url}}/api/v1/transactions/{{transaction_internal_id}}" } },
+        { "name": "Get Transaction By Business ID", "request": { "method": "GET", "url": "{{base_url}}/api/v1/transactions/business/{{transaction_business_id}}" } },
+        { "name": "Get Transactions By Account", "request": { "method": "GET", "url": "{{base_url}}/api/v1/transactions/account/{{sender_account_raw}}" } },
+        { "name": "Get Transaction Risk", "request": { "method": "GET", "url": "{{base_url}}/api/v1/transactions/{{transaction_internal_id}}/risk" } }
+      ]
+    },
+    {
+      "name": "4. Cleanup (run last)",
+      "item": [
+        {
+          "name": "Create Disposable Customer",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('delete_customer_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountHolderType\": \"TEST\",\n  \"kycVerificationStatus\": \"VERIFIED\",\n  \"riskCountryFlag\": false\n}" }, "url": "{{base_url}}/api/v1/customers" }
+        },
+        {
+          "name": "Create Disposable Account",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "pm.collectionVariables.set('delete_account_id', body.data.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"accountId\": \"POSTMAN-DELETE-001\",\n  \"customerId\": \"{{delete_customer_id}}\",\n  \"accountType\": \"TEST\",\n  \"bankLocation\": \"IN\"\n}" }, "url": "{{base_url}}/api/v1/accounts" }
+        },
+        { "name": "Delete Disposable Account", "request": { "method": "DELETE", "url": "{{base_url}}/api/v1/accounts/{{delete_account_id}}" } },
+        { "name": "Delete Disposable Customer", "request": { "method": "DELETE", "url": "{{base_url}}/api/v1/customers/{{delete_customer_id}}" } }
+      ]
+    }
+  ]
+}

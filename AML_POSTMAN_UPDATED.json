@@ -1,0 +1,831 @@
+{
+  "info": {
+    "name": "AML System - Updated API Collection",
+    "description": "Event-Driven Anti-Money Laundering System with Case Management",
+    "version": "2.0.0"
+  },
+  "variable": [
+    {
+      "key": "api_gateway_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login (JWT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/auth/login",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('jwt_token', jsonData.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "OAuth2 Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password"
+                },
+                {
+                  "key": "client_id",
+                  "value": "aml-client"
+                },
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "password123"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/auth/oauth2/authorize",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "auth", "oauth2", "authorize"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Submit New Transaction (Triggers Detection)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senderAccountId\": \"ACC_HASH_1a2b3c\",\n  \"receiverAccountId\": \"ACC_HASH_9x8y7z\",\n  \"amount\": 50000.00,\n  \"paymentCurrency\": \"USD\",\n  \"receivedCurrency\": \"USD\",\n  \"transactionDate\": \"2024-11-25T10:35:19Z\",\n  \"paymentType\": \"WIRE_TRANSFER\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/transactions",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "transactions"]
+            }
+          },
+          "description": "Submit transaction → Triggers detection engine → If flagged, publishes TransactionFlaggedEvent → Case created automatically"
+        },
+        {
+          "name": "Get Transaction by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/transactions/txn-12345",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "transactions", "txn-12345"]
+            }
+          }
+        },
+        {
+          "name": "List Transactions (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/transactions?page=0&size=20&sort=createdAt,desc",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "createdAt,desc"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Detection & Analysis",
+      "item": [
+        {
+          "name": "Run Detection Analysis (Manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionId\": \"txn-12345\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/analysis/detect",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "analysis", "detect"]
+            }
+          },
+          "description": "Manually trigger detection on a transaction. Runs all 3: Rules + ML + GNN(placeholder)"
+        },
+        {
+          "name": "Get Detection Result",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/analysis/result/txn-12345",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "analysis", "result", "txn-12345"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flagged Transactions",
+      "item": [
+        {
+          "name": "List All Flagged Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/flagged-transactions?page=0&size=50&riskLevel=HIGH&status=PENDING",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "flagged-transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "50"
+                },
+                {
+                  "key": "riskLevel",
+                  "value": "HIGH"
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Flagged Transaction Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/flagged-transactions/flag-xyz789",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "flagged-transactions", "flag-xyz789"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Case Management (NEW: Event-Driven)",
+      "item": [
+        {
+          "name": "Create Case Manually (if not auto-created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flaggedTransactionId\": \"flag-xyz789\",\n  \"assignToExpertType\": \"SENIOR_COMPLIANCE\",\n  \"priorityOverride\": 1,\n  \"additionalContext\": \"Manual escalation: Potential structuring detected\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases"]
+            }
+          },
+          "description": "Create case manually (normally auto-created from TransactionFlaggedEvent)"
+        },
+        {
+          "name": "List Cases with Full Context",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases?page=0&size=20&status=PENDING&priority=1",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "priority",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "description": "Returns CaseResponse with full transaction details, risk analysis, and report"
+        },
+        {
+          "name": "Get Case with All Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-123",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-123"]
+            }
+          },
+          "description": "Get case details: Transaction info + Risk score + Report + Expert assignment"
+        },
+        {
+          "name": "Update Case Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_REVIEW\",\n  \"assignedToExpertId\": \"expert-001\",\n  \"notes\": \"Case assigned to John Doe for review\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-123",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-123"]
+            }
+          }
+        },
+        {
+          "name": "Resolve Case",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolution\": \"APPROVED\",\n  \"resolutionNotes\": \"Reviewed transaction. Legitimate business payment. Account verified.\",\n  \"recommendation\": \"FALSE_POSITIVE\",\n  \"resolvedBy\": \"expert-001\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-123/resolve",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-123", "resolve"]
+            }
+          },
+          "description": "Resolve case with decision: APPROVED, REJECTED, ESCALATED, or MANUAL_REVIEW"
+        }
+      ]
+    },
+    {
+      "name": "Reports & LLM (NEW: Multiple Strategies)",
+      "item": [
+        {
+          "name": "Generate SAR Report (Template-Based MVP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caseId\": \"case-123\",\n  \"reportFormat\": \"PDF\",\n  \"includeAnalysis\": true,\n  \"llmProvider\": \"TEMPLATE\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/generate",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "generate"]
+            }
+          },
+          "description": "Generate report using TEMPLATE strategy (MVP, no API calls needed)"
+        },
+        {
+          "name": "Generate SAR Report (Gemini - Free Tier)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caseId\": \"case-123\",\n  \"reportFormat\": \"PDF\",\n  \"includeAnalysis\": true,\n  \"llmProvider\": \"GEMINI\",\n  \"customInstructions\": \"Focus on compliance risk factors\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/generate",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "generate"]
+            }
+          },
+          "description": "Generate report using Gemini API (Free tier: 60 req/min, 1.5M tokens/month)"
+        },
+        {
+          "name": "Generate SAR Report (OpenAI GPT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caseId\": \"case-123\",\n  \"reportFormat\": \"PDF\",\n  \"includeAnalysis\": true,\n  \"llmProvider\": \"OPENAI\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/generate",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "generate"]
+            }
+          },
+          "description": "Generate report using OpenAI GPT-3.5-turbo ($0.15 per 1M tokens)"
+        },
+        {
+          "name": "Generate SAR Report (Claude API)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caseId\": \"case-123\",\n  \"reportFormat\": \"PDF\",\n  \"includeAnalysis\": true,\n  \"llmProvider\": \"CLAUDE\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/generate",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "generate"]
+            }
+          },
+          "description": "Generate report using Claude API (Best quality, $0.015 per 1K tokens)"
+        },
+        {
+          "name": "Get Generated Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/report-12345",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "report-12345"]
+            }
+          }
+        },
+        {
+          "name": "Download Report PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/report-12345/download",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "report-12345", "download"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Get Account Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/accounts/ACC_HASH_1a2b3c",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "accounts", "ACC_HASH_1a2b3c"]
+            }
+          }
+        },
+        {
+          "name": "Update Account Risk Score",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountRiskScore\": 75.5\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/accounts/ACC_HASH_1a2b3c",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "accounts", "ACC_HASH_1a2b3c"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/customers/cust-12345",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "customers", "cust-12345"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Event Flow (Full Pipeline Demo)",
+      "item": [
+        {
+          "name": "1. Submit High-Risk Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senderAccountId\": \"ACC_HASH_UAE\",\n  \"receiverAccountId\": \"ACC_HASH_IRAN\",\n  \"amount\": 95000.00,\n  \"paymentCurrency\": \"USD\",\n  \"receivedCurrency\": \"USD\",\n  \"transactionDate\": \"2024-11-25T10:35:19Z\",\n  \"paymentType\": \"WIRE_TRANSFER\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/transactions",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "transactions"]
+            }
+          },
+          "description": "This triggers: Detection Engine → TransactionFlaggedEvent → Case Management (auto-create case) → LLM Service (auto-generate report) → Notification Service"
+        },
+        {
+          "name": "2. Check Flagged Transaction",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/flagged-transactions?page=0&size=1",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "flagged-transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "description": "Should show the flagged transaction from step 1"
+        },
+        {
+          "name": "3. Check Auto-Created Case (Full Context)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases?page=0&size=1",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "description": "Should show Case with: Transaction details, Risk analysis, Report URL, Expert type"
+        },
+        {
+          "name": "4. Get Case Details (Professional View)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-id-from-step-3",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-id-from-step-3"]
+            }
+          },
+          "description": "Professional sees: Full transaction context + Risk score breakdown + Report + Recommended actions"
+        },
+        {
+          "name": "5. Download Generated Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/reports/report-id-from-case/download",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "reports", "report-id-from-case", "download"]
+            }
+          },
+          "description": "Download SAR report in PDF format (auto-generated by LLM)"
+        },
+        {
+          "name": "6. Update Case Status to IN_REVIEW",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_REVIEW\",\n  \"assignedToExpertId\": \"expert-001\",\n  \"notes\": \"Assigned to Senior Compliance Officer\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-id-from-step-3",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-id-from-step-3"]
+            }
+          }
+        },
+        {
+          "name": "7. Resolve Case (Expert Decision)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolution\": \"REJECTED\",\n  \"resolutionNotes\": \"Transaction is prohibited due to OFAC sanctions on receiver country (Iran). Recommend immediate escalation to regulatory team.\",\n  \"recommendation\": \"ESCALATE_TO_REGULATORY\",\n  \"resolvedBy\": \"expert-001\"\n}"
+            },
+            "url": {
+              "raw": "{{api_gateway_url}}/api/v1/cases/case-id-from-step-3/resolve",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["api", "v1", "cases", "case-id-from-step-3", "resolve"]
+            }
+          },
+          "description": "Expert resolves the case with their findings"
+        }
+      ]
+    },
+    {
+      "name": "Health & Monitoring",
+      "item": [
+        {
+          "name": "API Gateway Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_gateway_url}}/actuator/health",
+              "host": ["{{api_gateway_url}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Eureka Server Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8761/eureka/apps",
+              "host": ["localhost:8761"],
+              "path": ["eureka", "apps"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

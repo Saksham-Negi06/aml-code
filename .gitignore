@@ -1,0 +1,30 @@
+<<<<<<< HEAD
+@"
+# Maven
+target/
+**/target/
+
+# Eclipse
+bin/
+**/bin/
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Java compiled files
+*.class
+
+# Build artifacts
+*.jar
+*.war
+
+# Logs
+*.log
+"@ | Set-Content .gitignore
