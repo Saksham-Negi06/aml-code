@@ -131,7 +131,8 @@ a {
     gap: 11px;
     font-family: Manrope, Arial, sans-serif;
     font-size: 22px;
-    font-weight: 600
+    font-weight: 600;
+    letter-spacing: -.01em
 }
 
 .brand b {
@@ -146,12 +147,15 @@ a {
     border-radius: 13px;
     background: var(--green);
     color: #fff;
-    font-weight: 800
+    font-size: 20px;
+    font-weight: 800;
+    box-shadow: 0 4px 10px rgba(15, 118, 87, .25)
 }
 
 .brand-light .brand-mark {
     color: var(--navy);
-    background: #76deb8
+    background: #76deb8;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .2)
 }
 
 .brand-light {
@@ -176,6 +180,10 @@ a {
 .login-art {
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
     padding: 54px 92px;
     color: #fff;
     background: linear-gradient(145deg, #092d28, #0b4a3c 65%, #0f6b50)
@@ -203,7 +211,6 @@ a {
 .login-copy {
     position: relative;
     z-index: 1;
-    margin-top: 18vh;
     max-width: 710px
 }
 
@@ -231,11 +238,8 @@ a {
 }
 
 .signal-card {
-    position: absolute;
+    position: relative;
     z-index: 1;
-    left: 92px;
-    right: 92px;
-    bottom: 113px;
     padding: 26px 30px;
     border: 1px solid rgba(255, 255, 255, .16);
     border-radius: 22px;
@@ -923,6 +927,10 @@ a {
     background: #7f1d1d
 }
 
+.legend-unassessed {
+    background: #8aa19a
+}
+
 .legend b {
     margin-left: auto
 }
@@ -1398,11 +1406,6 @@ blockquote {
         font-size: 20px
     }
 
-    .signal-card {
-        left: 65px;
-        right: 65px
-    }
-
     .security-note {
         left: 65px
     }
@@ -1559,9 +1562,4 @@ blockquote {
     .responsive-table .aegis-data-table tr { margin-bottom: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
     .responsive-table .aegis-data-table td { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border: 0; text-align: right; overflow-wrap: anywhere; }
     .responsive-table .aegis-data-table td:before { content: attr(data-label); flex: 0 0 34%; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
-
-    .signal-card {
-        left: 20px;
-        right: 20px
-    }
 }

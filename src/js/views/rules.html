@@ -1,11 +1,39 @@
 <div class="page-view">
-    <div class="page-head">
-        <div>
-            <h1>Detection rules</h1>
-            <p>Configurable controls with complete rule-hit traceability.</p>
-        </div>
-        <div class="page-actions"><oj-button chroming="callToAction" on-oj-action="[[create]]">+ Create rule</oj-button>
-        </div>
+  <div class="page-head">
+    <div>
+      <h1>Detection rules</h1>
+      <p>Configurable controls with complete rule-hit traceability.</p>
     </div>
-    <div class="panel table-panel"><table class="aegis-data-table"><thead><tr><th>Rule</th><th>Name</th><th>Condition</th><th>Threshold</th><th>Severity</th><th>Status</th><th>Hits (30d)</th></tr></thead><tbody data-bind="foreach: rows"><tr><td data-bind="text: rule"></td><td data-bind="text: name"></td><td data-bind="text: condition"></td><td data-bind="text: threshold"></td><td data-bind="text: severity"></td><td data-bind="text: status"></td><td data-bind="text: hits"></td></tr></tbody></table></div>
+    <div class="page-actions">
+      <oj-button chroming="callToAction" on-oj-action="[[create]]"
+        >+ Create rule</oj-button
+      >
+    </div>
+  </div>
+  <div class="panel table-panel">
+    <table class="aegis-data-table">
+      <thead>
+        <tr>
+          <th>Rule</th>
+          <th>Name</th>
+          <th>Condition</th>
+          <th>Threshold</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Hits (30d)</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: rows">
+        <tr>
+          <td data-bind="text: rule"></td>
+          <td data-bind="text: name"></td>
+          <td data-bind="text: condition"></td>
+          <td data-bind="text: threshold"></td>
+          <td data-bind="text: severity"></td>
+          <td data-bind="text: status"></td>
+          <td data-bind="text: hits"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

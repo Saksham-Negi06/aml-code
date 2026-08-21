@@ -112,7 +112,7 @@ define(['knockout', 'services/api', 'viewModels/base'], function (ko, api, BaseV
           ['Active accounts', String(accounts.length), 'From account service', 'danger-none'],
           ['Transactions monitored', String(transactions.length), 'From transaction service', 'danger-none']
         ]);
-        self.recentTransactions(transactions.slice(0, 4).map(function (transaction) {
+        self.recentTransactions(transactions.slice(0, 8).map(function (transaction) {
           transaction.displayDate = isNaN(transactionTime(transaction).getTime()) ? '' : transactionTime(transaction).toLocaleString();
           return transaction;
         }));

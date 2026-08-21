@@ -18,33 +18,35 @@
     <!-- /ko -->
   </div>
 
+  <p class="error-message" data-bind="visible: error, text: error"></p>
+
   <div class="dashboard-grid">
     <section class="panel trend-panel">
       <div class="panel-head">
         <h3>Recent transaction activity</h3>
-        <button class="plain-action">Last 14 days⌄</button>
+        <span class="plain-action" data-bind="text: activityRange"></span>
       </div>
       <div class="risk-chart">
-        <!-- ko foreach: trend -->
-        <span class="bar-wrap"><i data-bind="style: {height: $data + '%'}"></i></span>
+        <!-- ko foreach: activity -->
+        <span class="bar-wrap" data-bind="attr: { title: label + ': ' + count + ' transaction(s)' }"><i data-bind="style: {height: $data.height + '%'}"></i></span>
         <!-- /ko -->
       </div>
       <div class="chart-labels">
-          <span>Latest 14 transactions</span>
+          <span>Latest 14 days of transactions</span>
       </div>
     </section>
 
     <section class="panel distribution-panel">
       <div class="panel-head">
-        <h3>Backend data</h3>
+        <h3>Customer risk distribution</h3>
         <button class="plain-action" data-bind="click: function(){ router.go('customers'); }">View customers</button>
       </div>
       <div class="donut-area">
-        <div class="donut">
-          <span><b data-bind="text: metrics().length ? metrics()[0][1] : '0'"></b>Customers</span>
+        <div class="donut" data-bind="style: donutStyle">
+          <span><b data-bind="text: riskTotal"></b>Customers</span>
         </div>
-        <div class="legend">
-          <div>Customer, account, and transaction totals are loaded from the API.</div>
+        <div class="legend" data-bind="foreach: riskDistribution">
+          <div><i data-bind="css: className"></i><span data-bind="text: label"></span><b data-bind="text: count"></b></div>
         </div>
       </div>
     </section>
@@ -54,12 +56,14 @@
         <div class="panel-head table-head-title"><h3>Recent transactions</h3></div>
       </div>
 
+      <div class="responsive-table">
       <table class="aegis-data-table">
         <thead><tr><th>Transaction</th><th>Sender account</th><th>Receiver account</th><th>Amount</th><th>Currency</th><th>Payment type</th><th>Status</th><th>Date</th></tr></thead>
-        <tbody data-bind="foreach: alerts">
-          <tr><td data-bind="text: transactionId"></td><td data-bind="text: senderAccountId"></td><td data-bind="text: receiverAccountId"></td><td data-bind="text: amount"></td><td data-bind="text: paymentCurrency"></td><td data-bind="text: paymentType"></td><td data-bind="text: status"></td><td data-bind="text: transactionDatetime"></td></tr>
+        <tbody data-bind="foreach: recentTransactions">
+          <tr><td data-label="Transaction" data-bind="text: transactionId"></td><td data-label="Sender account" data-bind="text: senderAccountId"></td><td data-label="Receiver account" data-bind="text: receiverAccountId"></td><td data-label="Amount" data-bind="text: amount"></td><td data-label="Currency" data-bind="text: paymentCurrency"></td><td data-label="Payment type" data-bind="text: paymentType"></td><td data-label="Status" data-bind="text: status"></td><td data-label="Date" data-bind="text: displayDate"></td></tr>
         </tbody>
       </table>
+      </div>
     </section>
   </div>
 </div>
