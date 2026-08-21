@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.aml.common.dto.response.RiskAssessmentResponse;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -170,9 +170,12 @@ public class TransactionService {
         // --------------------------------------------------------
 
         TransactionHistoryService.AccountHistory senderHistory =
-                transactionHistoryService.calculateSenderHistory(
-                        sender,
-                        savedTransaction.getTransactionId()
+                resolveHistory(
+                        request.getSenderHistory(),
+                        transactionHistoryService.calculateSenderHistory(
+                                sender,
+                                savedTransaction.getTransactionId()
+                        )
                 );
 
         // --------------------------------------------------------
@@ -180,9 +183,12 @@ public class TransactionService {
         // --------------------------------------------------------
 
         TransactionHistoryService.AccountHistory receiverHistory =
-                transactionHistoryService.calculateReceiverHistory(
-                        receiver,
-                        savedTransaction.getTransactionId()
+                resolveHistory(
+                        request.getReceiverHistory(),
+                        transactionHistoryService.calculateReceiverHistory(
+                                receiver,
+                                savedTransaction.getTransactionId()
+                        )
                 );
 
         // --------------------------------------------------------
@@ -611,6 +617,33 @@ public class TransactionService {
         );
 
         return dto;
+    }
+
+    private TransactionHistoryService.AccountHistory resolveHistory(
+            FastApiRequest.History requestHistory,
+            TransactionHistoryService.AccountHistory calculatedHistory
+    ) {
+
+        if (requestHistory == null) {
+            return calculatedHistory;
+        }
+
+        return new TransactionHistoryService.AccountHistory(
+                defaultInt(requestHistory.getTransactionCount()),
+                defaultBigDecimal(requestHistory.getAverageAmount()),
+                defaultBigDecimal(requestHistory.getAmountStddev()),
+                defaultBigDecimal(requestHistory.getMinimumAmount()),
+                defaultBigDecimal(requestHistory.getMaximumAmount()),
+                defaultInt(requestHistory.getUniqueCounterparties())
+        );
+    }
+
+    private int defaultInt(Integer value) {
+        return value != null ? value : 0;
+    }
+
+    private BigDecimal defaultBigDecimal(BigDecimal value) {
+        return value != null ? value : BigDecimal.ZERO;
     }
 
     // ============================================================

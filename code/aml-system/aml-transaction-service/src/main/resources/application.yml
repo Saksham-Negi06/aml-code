@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: transaction-service
+  devtools:
+    restart:
+      enabled: false
   datasource:
     url: jdbc:oracle:thin:@localhost:1521/freepdb1
     username: capstone

@@ -60,7 +60,43 @@ public class CreateTransactionRequest {
     @JsonProperty("use_gemini")
     private Boolean useGemini;
 
+    @JsonProperty("sender_history")
+    private FastApiRequest.History senderHistory;
+
+    @JsonProperty("receiver_history")
+    private FastApiRequest.History receiverHistory;
+
     public CreateTransactionRequest() {
+    }
+
+    public CreateTransactionRequest(
+            String transactionId,
+            String senderAccountId,
+            String receiverAccountId,
+            BigDecimal amount,
+            String paymentCurrency,
+            String receivedCurrency,
+            String senderBankLocation,
+            String receiverBankLocation,
+            String paymentType,
+            OffsetDateTime transactionDatetime,
+            Boolean useGemini,
+            FastApiRequest.History senderHistory,
+            FastApiRequest.History receiverHistory
+    ) {
+        this.transactionId = transactionId;
+        this.senderAccountId = senderAccountId;
+        this.receiverAccountId = receiverAccountId;
+        this.amount = amount;
+        this.paymentCurrency = paymentCurrency;
+        this.receivedCurrency = receivedCurrency;
+        this.senderBankLocation = senderBankLocation;
+        this.receiverBankLocation = receiverBankLocation;
+        this.paymentType = paymentType;
+        this.transactionDatetime = transactionDatetime;
+        this.useGemini = useGemini;
+        this.senderHistory = senderHistory;
+        this.receiverHistory = receiverHistory;
     }
 
     public CreateTransactionRequest(
@@ -76,17 +112,21 @@ public class CreateTransactionRequest {
             OffsetDateTime transactionDatetime,
             Boolean useGemini
     ) {
-        this.transactionId = transactionId;
-        this.senderAccountId = senderAccountId;
-        this.receiverAccountId = receiverAccountId;
-        this.amount = amount;
-        this.paymentCurrency = paymentCurrency;
-        this.receivedCurrency = receivedCurrency;
-        this.senderBankLocation = senderBankLocation;
-        this.receiverBankLocation = receiverBankLocation;
-        this.paymentType = paymentType;
-        this.transactionDatetime = transactionDatetime;
-        this.useGemini = useGemini;
+        this(
+                transactionId,
+                senderAccountId,
+                receiverAccountId,
+                amount,
+                paymentCurrency,
+                receivedCurrency,
+                senderBankLocation,
+                receiverBankLocation,
+                paymentType,
+                transactionDatetime,
+                useGemini,
+                null,
+                null
+        );
     }
 
     public String getTransactionId() {
@@ -177,5 +217,21 @@ public class CreateTransactionRequest {
 
     public void setUseGemini(Boolean useGemini) {
         this.useGemini = useGemini;
+    }
+
+    public FastApiRequest.History getSenderHistory() {
+        return senderHistory;
+    }
+
+    public void setSenderHistory(FastApiRequest.History senderHistory) {
+        this.senderHistory = senderHistory;
+    }
+
+    public FastApiRequest.History getReceiverHistory() {
+        return receiverHistory;
+    }
+
+    public void setReceiverHistory(FastApiRequest.History receiverHistory) {
+        this.receiverHistory = receiverHistory;
     }
 }
