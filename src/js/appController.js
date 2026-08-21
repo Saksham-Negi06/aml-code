@@ -109,18 +109,18 @@ define([
       });
     };
 
-    // The compact shell uses a native input, so connect it to the observable
-    // shared with each routed view.
-    window.setTimeout(function () {
-      var input = document.querySelector('.topbar .search input');
-      if (input) input.addEventListener('input', function () { self.searchText(input.value); });
+    self.wireTopbarChrome = function () {
       var topbar = document.querySelector('.topbar');
       var sidebar = document.querySelector('.sidebar');
-      if (topbar && sidebar) {
-        var menu = document.createElement('button'); menu.className = 'menu-button'; menu.type = 'button'; menu.setAttribute('aria-label', 'Open navigation'); menu.textContent = '☰';
-        menu.addEventListener('click', function () { self.openMenu(); }); topbar.insertBefore(menu, topbar.firstChild);
-        self.mobileMenuOpen.subscribe(function (open) { sidebar.classList.toggle('open', open); });
-      }
+      if (!topbar || !sidebar || topbar.dataset.menuBound) return;
+      topbar.dataset.menuBound = 'true';
+      var menu = document.createElement('button'); menu.className = 'menu-button'; menu.type = 'button'; menu.setAttribute('aria-label', 'Open navigation'); menu.textContent = '☰';
+      menu.addEventListener('click', function () { self.openMenu(); }); topbar.insertBefore(menu, topbar.firstChild);
+      self.mobileMenuOpen.subscribe(function (open) { sidebar.classList.toggle('open', open); });
+    };
+
+    window.setTimeout(function () {
+      self.wireTopbarChrome();
       self.wireBrandHome();
     }, 0);
 
@@ -156,7 +156,7 @@ define([
 
     self.login = function () {
       self.isAuthenticated(true);
-      window.setTimeout(self.wireBrandHome, 0);
+      window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
       self.showToast('Secure session started');
@@ -180,7 +180,7 @@ define([
       self.userLogin(self.signupEmail().trim());
       self.currentUser({ name: self.signupName().trim(), role: 'Compliance analyst', initials: self.signupName().trim().slice(0, 2).toUpperCase() });
       self.isAuthenticated(true);
-      window.setTimeout(self.wireBrandHome, 0);
+      window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
       self.showToast('Your secure workspace is ready');

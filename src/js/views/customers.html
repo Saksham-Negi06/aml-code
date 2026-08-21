@@ -2,16 +2,23 @@
   <div class="page-head">
     <div>
       <h1>Customers</h1>
+      <p>Live customer records and risk levels from the AML backend.</p>
     </div>
   </div>
-  <div class="panel search-panel">
-    <oj-input-text
-      label-hint="Search customers"
-      value="{{search}}"
-    ></oj-input-text>
-  </div>
   <p class="error-message" data-bind="visible: error, text: error"></p>
+  <p class="loading-message" data-bind="visible: loading">Loading customer records…</p>
   <div class="panel table-panel">
+    <div class="table-toolbar">
+      <div class="search">
+        <span aria-hidden="true">⌕</span
+        ><input
+          aria-label="Search customers"
+          placeholder="Search by ID, holder type, KYC status..."
+          data-bind="value: search, valueUpdate: 'input'"
+        />
+      </div>
+      <span data-bind="text: filteredCustomers().length + ' customer(s)'"></span>
+    </div>
     <div class="responsive-table">
     <table class="aegis-data-table">
       <thead>
@@ -37,6 +44,7 @@
         </tr>
       </tbody>
     </table>
+    <p class="loading-message" data-bind="visible: !loading() && !filteredCustomers().length">No customers match your search.</p>
     </div>
   </div>
 </div>

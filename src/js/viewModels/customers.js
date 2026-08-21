@@ -43,7 +43,7 @@ define([
       var accounts = result[1] || [];
       self.customers((result[0] || []).map(function (customer) {
         var linked = accounts.filter(function (account) { return account.customerId === customer.id; });
-        customer.riskScore = Math.round(linked.reduce(function (sum, account) { return sum + Number(account.accountRiskScore || 0); }, 0) / (linked.length || 1));
+        customer.riskScore = Math.round((linked.reduce(function (sum, account) { return sum + Number(account.accountRiskScore || 0); }, 0) / (linked.length || 1)) * 100);
         customer.riskLevel = self.riskClass(customer.riskScore).toUpperCase();
         customer.accountCount = (customer.accountIds || []).length;
         customer.riskCountryFlag = customer.riskCountryFlag ? 'Yes' : 'No';

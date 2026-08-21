@@ -782,7 +782,7 @@ a {
 .dashboard-grid {
     margin-top: 22px;
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 22px
 }
 
@@ -1531,6 +1531,11 @@ blockquote {
         align-items: flex-start;
         gap: 10px;
         flex-direction: column
+    }
+
+    .table-toolbar .search {
+        width: 100%;
+        margin: 0
     }
 
     .filter-row {

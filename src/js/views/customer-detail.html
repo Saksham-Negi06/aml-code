@@ -1,12 +1,162 @@
 <div class="page-view">
-  <p class="loading-message" data-bind="visible: loading">Loading customer profile…</p><p class="error-message" data-bind="visible:error,text:error"></p>
+  <p class="loading-message" data-bind="visible: loading">
+    Loading customer profile…
+  </p>
+  <p class="error-message" data-bind="visible:error,text:error"></p>
   <!-- ko with: customer -->
-  <div class="page-head"><div><h1 data-bind="text:name"></h1><p data-bind="text:id+' · '+type+' · Onboarded '+onboarded"></p></div><div class="page-actions"><button data-bind="click:$parent.back">← Customers</button><button class="primary" data-bind="click:$parent.runAssessment">Risk assessment</button></div></div>
+  <div class="page-head">
+    <div>
+      <h1 data-bind="text:name"></h1>
+      <p data-bind="text:id+' · '+type+' · Onboarded '+onboarded"></p>
+    </div>
+    <div class="page-actions">
+      <button data-bind="click:$parent.back">← Customers</button
+      ><button class="primary" data-bind="click:$parent.runAssessment">
+        Risk assessment
+      </button>
+    </div>
+  </div>
   <div class="profile-grid">
-    <section class="panel profile-card"><div class="profile-title"><span class="avatar large" data-bind="text:$parent.initials(name)"></span><div><h2 data-bind="text:name"></h2><p data-bind="text:type"></p></div><span class="risk-pill" data-bind="css:$parent.riskClass(score),text:score+' · '+risk"></span></div><div class="detail-list"><div><small>KYC STATUS</small><b data-bind="text:kyc"></b></div><div><small>RISK COUNTRY</small><b data-bind="text:riskCountry"></b></div><div><small>ACCOUNTS</small><b data-bind="text:accountCount"></b></div><div><small>TRANSACTIONS</small><b data-bind="text:transactionCount"></b></div></div></section>
-    <section class="panel ai-card"><div class="panel-head"><h3>Customer risk summary</h3><span class="model-chip">LIVE DATA</span></div><div class="ai-score"><div class="score-ring" data-bind="style:{'--score':Math.min(100,score)+'%'}"><b data-bind="text:score"></b></div><div><span data-bind="text:risk+' RISK'"></span><h3 data-bind="text:transactionCount+' monitored transactions'"></h3><p data-bind="text:accountCount+' linked accounts'"></p></div></div></section>
-    <section class="panel full-span"><div class="panel-head"><h3>Risk explanation &amp; recommendation</h3><span class="status under-review">EXPLAINABLE AI</span></div><blockquote data-bind="text:explanation"></blockquote><div class="recommendation"><b>Recommended action</b><span data-bind="text:recommendation"></span></div></section>
-    <section class="panel full-span"><div class="panel-head"><h3>Accounts</h3><span data-bind="text:$parent.accounts().length+' record(s)'"></span></div><div class="responsive-table"><table class="aegis-data-table"><thead><tr><th>Account</th><th>Type</th><th>Bank location</th><th>Risk score</th><th>Flagged</th></tr></thead><tbody data-bind="foreach:$parent.accounts"><tr><td data-label="Account" data-bind="text:id"></td><td data-label="Type" data-bind="text:accountType"></td><td data-label="Location" data-bind="text:bankLocation||'—'"></td><td data-label="Risk"><span class="risk-pill" data-bind="text:Math.round(Number(accountRiskScore||0)),css:$parents[1].riskClass(Number(accountRiskScore||0))"></span></td><td data-label="Flagged"><span class="status" data-bind="text:isFlagged?'FLAGGED':'CLEAR',css:isFlagged?'flagged':'active'"></span></td></tr></tbody></table></div></section>
-    <section class="panel full-span"><div class="panel-head"><h3>Related transactions</h3><span data-bind="text:$parent.transactions().length+' record(s)'"></span></div><div class="responsive-table"><table class="aegis-data-table"><thead><tr><th>Transaction</th><th>Date</th><th>Amount</th><th>Type</th><th>Risk</th><th>Status</th></tr></thead><tbody data-bind="foreach:$parent.transactions"><tr><td data-label="Transaction" data-bind="text:transactionId"></td><td data-label="Date" data-bind="text:displayDate"></td><td data-label="Amount" data-bind="text:amount+' '+paymentCurrency"></td><td data-label="Type" data-bind="text:paymentType"></td><td data-label="Risk"><span class="risk-pill" data-bind="text:riskCategory+' '+riskScore,css:$parents[1].riskClass(riskScore)"></span></td><td data-label="Status"><span class="status" data-bind="text:status,css:$parents[1].statusClass(status)"></span></td></tr></tbody></table></div></section>
-  </div><!-- /ko -->
+    <section class="panel profile-card">
+      <div class="profile-title">
+        <span
+          class="avatar large"
+          data-bind="text:$parent.initials(name)"
+        ></span>
+        <div>
+          <h2 data-bind="text:name"></h2>
+          <p data-bind="text:type"></p>
+        </div>
+        <span
+          class="risk-pill"
+          data-bind="css:$parent.riskClass(score),text:score+' · '+risk"
+        ></span>
+      </div>
+      <div class="detail-list">
+        <div><small>KYC STATUS</small><b data-bind="text:kyc"></b></div>
+        <div>
+          <small>RISK COUNTRY</small><b data-bind="text:riskCountry"></b>
+        </div>
+        <div><small>ACCOUNTS</small><b data-bind="text:accountCount"></b></div>
+        <div>
+          <small>TRANSACTIONS</small><b data-bind="text:transactionCount"></b>
+        </div>
+      </div>
+    </section>
+    <section class="panel ai-card">
+      <div class="panel-head">
+        <h3>Customer risk summary</h3>
+        <span class="model-chip">LIVE DATA</span>
+      </div>
+      <div class="ai-score">
+        <div
+          class="score-ring"
+          data-bind="style:{'--score':Math.min(100,score)+'%'}"
+        >
+          <b data-bind="text:score"></b>
+        </div>
+        <div>
+          <span data-bind="text:risk+' RISK'"></span>
+          <h3 data-bind="text:transactionCount+' monitored transactions'"></h3>
+          <p data-bind="text:accountCount+' linked accounts'"></p>
+        </div>
+      </div>
+    </section>
+    <section class="panel full-span">
+      <div class="panel-head">
+        <h3>Risk explanation &amp; recommendation</h3>
+        <span class="status under-review">EXPLAINABLE AI</span>
+      </div>
+      <blockquote data-bind="text:explanation"></blockquote>
+      <div class="recommendation">
+        <b>Recommended action</b><span data-bind="text:recommendation"></span>
+      </div>
+    </section>
+    <section class="panel full-span">
+      <div class="panel-head">
+        <h3>Accounts</h3>
+        <span data-bind="text:$parent.accounts().length+' record(s)'"></span>
+      </div>
+      <div class="responsive-table">
+        <table class="aegis-data-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Type</th>
+              <th>Bank location</th>
+              <th>Risk score</th>
+              <th>Flagged</th>
+            </tr>
+          </thead>
+          <tbody data-bind="foreach:$parent.accounts">
+            <tr>
+              <td data-label="Account" data-bind="text:id"></td>
+              <td data-label="Type" data-bind="text:accountType"></td>
+              <td data-label="Location" data-bind="text:bankLocation||'—'"></td>
+              <td data-label="Risk">
+                <span
+                  class="risk-pill"
+                  data-bind="text:Math.round(Number(accountRiskScore||0)*100),css:$parents[1].riskClass(Number(accountRiskScore||0)*100)"
+                ></span>
+              </td>
+              <td data-label="Flagged">
+                <span
+                  class="status"
+                  data-bind="text:isFlagged?'FLAGGED':'CLEAR',css:isFlagged?'flagged':'active'"
+                ></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="loading-message" data-bind="visible: !$parent.accounts().length">No accounts are linked to this customer.</p>
+      </div>
+    </section>
+    <section class="panel full-span">
+      <div class="panel-head">
+        <h3>Related transactions</h3>
+        <span
+          data-bind="text:$parent.transactions().length+' record(s)'"
+        ></span>
+      </div>
+      <div class="responsive-table">
+        <table class="aegis-data-table">
+          <thead>
+            <tr>
+              <th>Transaction</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Risk</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody data-bind="foreach:$parent.transactions">
+            <tr>
+              <td data-label="Transaction" data-bind="text:transactionId"></td>
+              <td data-label="Date" data-bind="text:displayDate"></td>
+              <td
+                data-label="Amount"
+                data-bind="text:amount+' '+paymentCurrency"
+              ></td>
+              <td data-label="Type" data-bind="text:paymentType"></td>
+              <td data-label="Risk">
+                <span
+                  class="risk-pill"
+                  data-bind="text:riskCategory+' '+riskScore,css:$parents[1].riskClass(riskScore)"
+                ></span>
+              </td>
+              <td data-label="Status">
+                <span
+                  class="status"
+                  data-bind="text:status,css:$parents[1].statusClass(status)"
+                ></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="loading-message" data-bind="visible: !$parent.transactions().length">No transactions are recorded for this customer's accounts.</p>
+      </div>
+    </section>
+  </div>
+  <!-- /ko -->
 </div>
