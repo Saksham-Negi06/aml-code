@@ -38,7 +38,7 @@ spring:
           # running or the transaction service has not registered yet.
           uri: http://localhost:8081
           predicates:
-            - Path=/api/v1/transactions/**, /api/v1/accounts/**, /api/v1/customers/**, /api/v1/cases/**
+            - Path=/api/v1/transactions/**, /api/v1/accounts/**, /api/v1/customers/**, /api/v1/cases/**, /api/v1/rules/**
 
 eureka:
   client:

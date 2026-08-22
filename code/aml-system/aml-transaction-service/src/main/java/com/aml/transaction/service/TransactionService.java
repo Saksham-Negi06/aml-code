@@ -77,10 +77,8 @@ public class TransactionService {
         // --------------------------------------------------------
 
         Account sender = accountRepository
-                .findByAccountHash(
-                        hashAccountId(
-                                request.getSenderAccountId()
-                        )
+                .findById(
+                        request.getSenderAccountId()
                 )
                 .orElseThrow(() ->
                         new IllegalArgumentException(
@@ -94,10 +92,8 @@ public class TransactionService {
         // --------------------------------------------------------
 
         Account receiver = accountRepository
-                .findByAccountHash(
-                        hashAccountId(
-                                request.getReceiverAccountId()
-                        )
+                .findById(
+                        request.getReceiverAccountId()
                 )
                 .orElseThrow(() ->
                         new IllegalArgumentException(
