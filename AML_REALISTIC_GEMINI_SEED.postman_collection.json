@@ -1,0 +1,186 @@
+﻿{
+  "info": {
+    "_postman_id": "9df1faec-5f98-4b18-8827-aml-realistic-gemini-seed",
+    "name": "AML - Realistic Database Seed (Gemini Enabled)",
+    "description": "Creates four linked customers and accounts, posts six realistic AML transactions through the Spring transaction service, and verifies that persisted risk assessments contain explanations. Run the entire collection in order with Collection Runner. The transaction endpoint persists the transaction, feature snapshot, and FastAPI risk assessment. Every transaction explicitly sends use_gemini=true. Before running, start Oracle, FastAPI on port 8500 with GEMINI_API_KEY set, and the transaction service on port 8081 (or set base_url to the gateway on port 8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8081" },
+    { "key": "fastapi_url", "value": "http://localhost:8500" },
+    { "key": "run_id", "value": "" },
+    { "key": "customer_arjun", "value": "" },
+    { "key": "customer_meera", "value": "" },
+    { "key": "customer_orion", "value": "" },
+    { "key": "customer_nadia", "value": "" },
+    { "key": "account_arjun", "value": "ARJUN-SAVINGS" },
+    { "key": "account_meera", "value": "MEERA-CURRENT" },
+    { "key": "account_orion", "value": "ORION-EXPORTS" },
+    { "key": "account_nadia", "value": "NADIA-PERSONAL" },
+    { "key": "account_arjun_id", "value": "" },
+    { "key": "account_meera_id", "value": "" },
+    { "key": "account_orion_id", "value": "" },
+    { "key": "account_nadia_id", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('run_id')) {",
+          "  pm.collectionVariables.set('run_id', Date.now().toString());",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('HTTP request succeeded', function () {",
+          "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Prerequisite checks",
+      "item": [
+        {
+          "name": "FastAPI health - model and Gemini must be enabled",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": { "exec": ["pm.collectionVariables.set('run_id', Date.now().toString());"] }
+            },
+            {
+              "listen": "test",
+              "script": { "exec": [
+                "const body = pm.response.json();",
+                "pm.test('ML model is loaded', () => pm.expect(body.model_loaded).to.eql(true));",
+                "pm.test('Gemini is configured', () => pm.expect(body.gemini_enabled).to.eql(true));"
+              ] }
+            }
+          ],
+          "request": { "method": "GET", "url": "{{fastapi_url}}/health" }
+        }
+      ]
+    },
+    {
+      "name": "1. Create customers",
+      "item": [
+        {
+          "name": "Arjun Rao - verified domestic individual",
+          "event": [{ "listen": "test", "script": { "exec": ["const b=pm.response.json(); pm.collectionVariables.set('customer_arjun', b.data.id);"] } }],
+          "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"accountHolderType\": \"INDIVIDUAL\",\n  \"kycVerificationStatus\": \"VERIFIED\",\n  \"riskCountryFlag\": false\n}"}, "url":"{{base_url}}/api/v1/customers" }
+        },
+        {
+          "name": "Meera Shah - verified domestic individual",
+          "event": [{ "listen": "test", "script": { "exec": ["const b=pm.response.json(); pm.collectionVariables.set('customer_meera', b.data.id);"] } }],
+          "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"accountHolderType\": \"INDIVIDUAL\",\n  \"kycVerificationStatus\": \"VERIFIED\",\n  \"riskCountryFlag\": false\n}"}, "url":"{{base_url}}/api/v1/customers" }
+        },
+        {
+          "name": "Orion Exports - enhanced-review business",
+          "event": [{ "listen": "test", "script": { "exec": ["const b=pm.response.json(); pm.collectionVariables.set('customer_orion', b.data.id);"] } }],
+          "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"accountHolderType\": \"BUSINESS\",\n  \"kycVerificationStatus\": \"ENHANCED_DUE_DILIGENCE\",\n  \"riskCountryFlag\": true\n}"}, "url":"{{base_url}}/api/v1/customers" }
+        },
+        {
+          "name": "Nadia Al-Farsi - KYC review individual",
+          "event": [{ "listen": "test", "script": { "exec": ["const b=pm.response.json(); pm.collectionVariables.set('customer_nadia', b.data.id);"] } }],
+          "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": {"mode":"raw","raw":"{\n  \"accountHolderType\": \"INDIVIDUAL\",\n  \"kycVerificationStatus\": \"UNDER_REVIEW\",\n  \"riskCountryFlag\": true\n}"}, "url":"{{base_url}}/api/v1/customers" }
+        }
+      ]
+    },
+    {
+      "name": "2. Create linked accounts",
+      "item": [
+        {
+          "name":"Arjun's established savings account",
+          "event":[{"listen":"test","script":{"exec":["const b=pm.response.json(); pm.collectionVariables.set('account_arjun_id', b.data.id);"]}}],
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"accountId\": \"{{account_arjun}}-{{run_id}}\",\n  \"customerId\": \"{{customer_arjun}}\",\n  \"accountType\": \"SAVINGS\",\n  \"bankLocation\": \"IN\",\n  \"accountRiskScore\": 8.5,\n  \"avgTransactionAmount\": 18500,\n  \"avgTransactionsPerMonth\": 14,\n  \"accountAgeDays\": 2190,\n  \"isFlagged\": false\n}"},"url":"{{base_url}}/api/v1/accounts"}
+        },
+        {
+          "name":"Meera's current account",
+          "event":[{"listen":"test","script":{"exec":["const b=pm.response.json(); pm.collectionVariables.set('account_meera_id', b.data.id);"]}}],
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"accountId\": \"{{account_meera}}-{{run_id}}\",\n  \"customerId\": \"{{customer_meera}}\",\n  \"accountType\": \"CURRENT\",\n  \"bankLocation\": \"IN\",\n  \"accountRiskScore\": 14.0,\n  \"avgTransactionAmount\": 42000,\n  \"avgTransactionsPerMonth\": 23,\n  \"accountAgeDays\": 1320,\n  \"isFlagged\": false\n}"},"url":"{{base_url}}/api/v1/accounts"}
+        },
+        {
+          "name":"Orion Exports cross-border business account",
+          "event":[{"listen":"test","script":{"exec":["const b=pm.response.json(); pm.collectionVariables.set('account_orion_id', b.data.id);"]}}],
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"accountId\": \"{{account_orion}}-{{run_id}}\",\n  \"customerId\": \"{{customer_orion}}\",\n  \"accountType\": \"BUSINESS_CURRENT\",\n  \"bankLocation\": \"AE\",\n  \"accountRiskScore\": 68.0,\n  \"avgTransactionAmount\": 480000,\n  \"avgTransactionsPerMonth\": 58,\n  \"accountAgeDays\": 410,\n  \"isFlagged\": true\n}"},"url":"{{base_url}}/api/v1/accounts"}
+        },
+        {
+          "name":"Nadia's new personal account",
+          "event":[{"listen":"test","script":{"exec":["const b=pm.response.json(); pm.collectionVariables.set('account_nadia_id', b.data.id);"]}}],
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"accountId\": \"{{account_nadia}}-{{run_id}}\",\n  \"customerId\": \"{{customer_nadia}}\",\n  \"accountType\": \"PERSONAL\",\n  \"bankLocation\": \"AE\",\n  \"accountRiskScore\": 55.0,\n  \"avgTransactionAmount\": 73000,\n  \"avgTransactionsPerMonth\": 7,\n  \"accountAgeDays\": 45,\n  \"isFlagged\": false\n}"},"url":"{{base_url}}/api/v1/accounts"}
+        }
+      ]
+    },
+    {
+      "name": "3. Post transactions (Gemini on; assessment persisted)",
+      "item": [
+        {
+          "name":"TX01 - routine domestic payment",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX01\",\n  \"sender_account\": \"{{account_arjun_id}}\",\n  \"receiver_account\": \"{{account_meera_id}}\",\n  \"amount\": 12500.00,\n  \"payment_currency\": \"INR\",\n  \"received_currency\": \"INR\",\n  \"sender_bank_location\": \"IN\",\n  \"receiver_bank_location\": \"IN\",\n  \"payment_type\": \"BANK_TRANSFER\",\n  \"transaction_datetime\": \"2026-08-18T10:20:00+05:30\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 168, \"average_amount\": 18500, \"amount_stddev\": 7200, \"minimum_amount\": 250, \"maximum_amount\": 62000, \"unique_counterparties\": 19},\n  \"receiver_history\": {\"transaction_count\": 276, \"average_amount\": 42000, \"amount_stddev\": 23500, \"minimum_amount\": 500, \"maximum_amount\": 185000, \"unique_counterparties\": 34}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"TX02 - unusually large cross-border wire",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX02\",\n  \"sender_account\": \"{{account_arjun_id}}\",\n  \"receiver_account\": \"{{account_orion_id}}\",\n  \"amount\": 950000.00,\n  \"payment_currency\": \"INR\",\n  \"received_currency\": \"AED\",\n  \"sender_bank_location\": \"IN\",\n  \"receiver_bank_location\": \"AE\",\n  \"payment_type\": \"WIRE_TRANSFER\",\n  \"transaction_datetime\": \"2026-08-19T02:14:00+05:30\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 169, \"average_amount\": 18465, \"amount_stddev\": 7180, \"minimum_amount\": 250, \"maximum_amount\": 62000, \"unique_counterparties\": 19},\n  \"receiver_history\": {\"transaction_count\": 701, \"average_amount\": 480000, \"amount_stddev\": 310000, \"minimum_amount\": 12000, \"maximum_amount\": 2100000, \"unique_counterparties\": 96}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"TX03 - business invoice settlement",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX03\",\n  \"sender_account\": \"{{account_orion_id}}\",\n  \"receiver_account\": \"{{account_meera_id}}\",\n  \"amount\": 385000.00,\n  \"payment_currency\": \"AED\",\n  \"received_currency\": \"INR\",\n  \"sender_bank_location\": \"AE\",\n  \"receiver_bank_location\": \"IN\",\n  \"payment_type\": \"INVOICE_PAYMENT\",\n  \"transaction_datetime\": \"2026-08-20T14:05:00+04:00\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 702, \"average_amount\": 480670, \"amount_stddev\": 311500, \"minimum_amount\": 12000, \"maximum_amount\": 2100000, \"unique_counterparties\": 97},\n  \"receiver_history\": {\"transaction_count\": 277, \"average_amount\": 41893, \"amount_stddev\": 23480, \"minimum_amount\": 500, \"maximum_amount\": 185000, \"unique_counterparties\": 34}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"TX04 - new account sends round-number night transfer",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX04\",\n  \"sender_account\": \"{{account_nadia_id}}\",\n  \"receiver_account\": \"{{account_orion_id}}\",\n  \"amount\": 500000.00,\n  \"payment_currency\": \"AED\",\n  \"received_currency\": \"USD\",\n  \"sender_bank_location\": \"AE\",\n  \"receiver_bank_location\": \"AE\",\n  \"payment_type\": \"WIRE_TRANSFER\",\n  \"transaction_datetime\": \"2026-08-22T01:37:00+04:00\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 7, \"average_amount\": 73000, \"amount_stddev\": 19000, \"minimum_amount\": 8000, \"maximum_amount\": 115000, \"unique_counterparties\": 3},\n  \"receiver_history\": {\"transaction_count\": 703, \"average_amount\": 480530, \"amount_stddev\": 311200, \"minimum_amount\": 12000, \"maximum_amount\": 2100000, \"unique_counterparties\": 97}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"TX05 - small peer-to-peer transfer",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX05\",\n  \"sender_account\": \"{{account_meera_id}}\",\n  \"receiver_account\": \"{{account_arjun_id}}\",\n  \"amount\": 2750.50,\n  \"payment_currency\": \"INR\",\n  \"received_currency\": \"INR\",\n  \"sender_bank_location\": \"IN\",\n  \"receiver_bank_location\": \"IN\",\n  \"payment_type\": \"UPI\",\n  \"transaction_datetime\": \"2026-08-22T18:42:00+05:30\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 278, \"average_amount\": 43120, \"amount_stddev\": 24800, \"minimum_amount\": 500, \"maximum_amount\": 385000, \"unique_counterparties\": 35},\n  \"receiver_history\": {\"transaction_count\": 170, \"average_amount\": 23945, \"amount_stddev\": 72100, \"minimum_amount\": 250, \"maximum_amount\": 950000, \"unique_counterparties\": 20}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"TX06 - rapid second transfer to the same beneficiary",
+          "request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"transaction_id\": \"AML-{{run_id}}-TX06\",\n  \"sender_account\": \"{{account_nadia_id}}\",\n  \"receiver_account\": \"{{account_orion_id}}\",\n  \"amount\": 499000.00,\n  \"payment_currency\": \"AED\",\n  \"received_currency\": \"USD\",\n  \"sender_bank_location\": \"AE\",\n  \"receiver_bank_location\": \"AE\",\n  \"payment_type\": \"WIRE_TRANSFER\",\n  \"transaction_datetime\": \"2026-08-22T01:51:00+04:00\",\n  \"use_gemini\": true,\n  \"sender_history\": {\"transaction_count\": 8, \"average_amount\": 126375, \"amount_stddev\": 142000, \"minimum_amount\": 8000, \"maximum_amount\": 500000, \"unique_counterparties\": 4},\n  \"receiver_history\": {\"transaction_count\": 704, \"average_amount\": 480558, \"amount_stddev\": 311000, \"minimum_amount\": 12000, \"maximum_amount\": 2100000, \"unique_counterparties\": 97}\n}"},"url":"{{base_url}}/api/v1/transactions"}
+        }
+      ]
+    },
+    {
+      "name":"4. Verify persisted risk assessments",
+      "item":[
+        {
+          "name":"Verify TX01 persisted explanation",
+          "event":[{"listen":"test","script":{"exec":["const d=pm.response.json().data;","pm.test('Risk assessment has core persisted fields',()=>{pm.expect(d.requestId).to.be.a('string').and.not.empty; pm.expect(d.riskScore).to.be.a('number'); pm.expect(d.riskCategory).to.be.a('string').and.not.empty;});","pm.test('Gemini/explanation fields were persisted',()=>{pm.expect(d.oneLineExplanation).to.be.a('string').and.not.empty; pm.expect(d.recommendation).to.be.a('string').and.not.empty; pm.expect(d.explanationJson).to.be.a('string').and.not.empty;});"]}}],
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/transactions/AML-{{run_id}}-TX01/risk"}
+        },
+        {
+          "name":"Verify TX02 persisted explanation",
+          "event":[{"listen":"test","script":{"exec":["const d=pm.response.json().data; pm.test('Persisted risk and explanation exist',()=>{pm.expect(d.requestId).to.be.a('string').and.not.empty; pm.expect(d.oneLineExplanation).to.be.a('string').and.not.empty; pm.expect(d.recommendation).to.be.a('string').and.not.empty;});"]}}],
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/transactions/AML-{{run_id}}-TX02/risk"}
+        },
+        {
+          "name":"Verify TX04 persisted explanation",
+          "event":[{"listen":"test","script":{"exec":["const d=pm.response.json().data; pm.test('Persisted risk and explanation exist',()=>{pm.expect(d.requestId).to.be.a('string').and.not.empty; pm.expect(d.oneLineExplanation).to.be.a('string').and.not.empty; pm.expect(d.recommendation).to.be.a('string').and.not.empty;});"]}}],
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/transactions/AML-{{run_id}}-TX04/risk"}
+        },
+        {
+          "name":"List all stored transactions",
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/transactions"}
+        },
+        {
+          "name":"List all stored accounts",
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/accounts"}
+        },
+        {
+          "name":"List all stored customers",
+          "request":{"method":"GET","url":"{{base_url}}/api/v1/customers"}
+        }
+      ]
+    }
+  ]
+}
+
