@@ -29,7 +29,7 @@
         </div>
         <span
           class="risk-pill"
-          data-bind="css:$parent.riskClass(score),text:score+' · '+risk"
+          data-bind="css:risk.toLowerCase(),text:risk"
         ></span>
       </div>
       <div class="detail-list">
@@ -51,12 +51,12 @@
       <div class="ai-score">
         <div
           class="score-ring"
-          data-bind="style:{'--score':Math.min(100,score)+'%'}"
+          data-bind="css:$parent.riskClass(score),style:{'--score':Math.min(100,score)+'%'}"
         >
-          <b data-bind="text:score"></b>
+          <b data-bind="text:score+'%'"></b>
         </div>
         <div>
-          <span data-bind="text:risk+' RISK'"></span>
+          <span class="risk-summary-label" data-bind="text:risk+' RISK',css:$parent.riskClass(score)"></span>
           <h3 data-bind="text:transactionCount+' monitored transactions'"></h3>
           <p data-bind="text:accountCount+' linked accounts'"></p>
         </div>
@@ -96,7 +96,7 @@
               <td data-label="Risk">
                 <span
                   class="risk-pill"
-                  data-bind="text:Math.round(Number(accountRiskScore||0)*100),css:$parents[1].riskClass(Number(accountRiskScore||0)*100)"
+                  data-bind="text:$parents[1].riskCategory(accountRiskScore),css:$parents[1].riskClass(accountRiskScore)"
                 ></span>
               </td>
               <td data-label="Flagged">
@@ -142,7 +142,7 @@
               <td data-label="Risk">
                 <span
                   class="risk-pill"
-                  data-bind="text:riskCategory+' '+riskScore,css:$parents[1].riskClass(riskScore)"
+                  data-bind="text:riskCategory,css:riskCategory.toLowerCase()"
                 ></span>
               </td>
               <td data-label="Status">

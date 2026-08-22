@@ -283,8 +283,9 @@
                 ><input
                   aria-label="Search cases, accounts, transactions"
                   placeholder="Search cases, accounts, transactions..."
-                  data-bind="value: searchText, valueUpdate: 'input'"
+                  data-bind="value: searchText, valueUpdate: 'input', event: { keydown: submitGlobalSearch }"
                 />
+              </div>
             </header>
             <div class="content">
               <oj-module
@@ -404,12 +405,7 @@
             </oj-navigation-list>
           </div>
         </header>
-        <oj-module
-          role="main"
-          class="oj-web-applayout-max-width oj-web-applayout-content"
-          aria-hidden="true"
-        >
-        </oj-module>
+        <div class="oj-web-applayout-max-width oj-web-applayout-content" aria-hidden="true"></div>
         <footer class="oj-web-applayout-footer" role="contentinfo">
           <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">
             <ul>

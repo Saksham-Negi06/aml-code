@@ -2,7 +2,7 @@
   <div class="page-head">
     <div>
       <h1>Detection rules</h1>
-      <p>Configurable controls with complete rule-hit traceability.</p>
+      <p>Configurable controls with complete rule-hit traceability. Active rules flag transactions on the AML alerts page alongside the risk model's automatic flags.</p>
     </div>
     <div class="page-actions">
       <oj-button chroming="callToAction" on-oj-action="[[create]]"
@@ -10,7 +10,10 @@
       >
     </div>
   </div>
+  <p class="error-message" data-bind="visible: error, text: error"></p>
+  <p class="loading-message" data-bind="visible: loading">Loading detection rules…</p>
   <div class="panel table-panel">
+    <div class="responsive-table">
     <table class="aegis-data-table">
       <thead>
         <tr>
@@ -21,19 +24,53 @@
           <th>Severity</th>
           <th>Status</th>
           <th>Hits (30d)</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody data-bind="foreach: rows">
         <tr>
-          <td data-bind="text: rule"></td>
-          <td data-bind="text: name"></td>
-          <td data-bind="text: condition"></td>
-          <td data-bind="text: threshold"></td>
-          <td data-bind="text: severity"></td>
-          <td data-bind="text: status"></td>
-          <td data-bind="text: hits"></td>
+          <td data-label="Rule" data-bind="text: id.slice(0, 8)"></td>
+          <td data-label="Name" data-bind="text: name"></td>
+          <td data-label="Condition" data-bind="text: condition"></td>
+          <td data-label="Threshold" data-bind="text: threshold"></td>
+          <td data-label="Severity"><span class="risk-pill" data-bind="text: severity, css: severity.toLowerCase()"></span></td>
+          <td data-label="Status"><span class="status" data-bind="text: status, css: status.toLowerCase()"></span></td>
+          <td data-label="Hits (30d)" data-bind="text: hits"></td>
+          <td data-label="Action">
+            <button class="report-download" data-bind="click: $parent.toggleStatus, enable: !$parent.busy(), text: status === 'ACTIVE' ? 'Deactivate' : 'Activate'"></button>
+            <button class="report-download" data-bind="click: $parent.removeRule, enable: !$parent.busy()">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
+    <p class="loading-message" data-bind="visible: !loading() && !rows().length">No detection rules yet. Create one to start flagging transactions automatically.</p>
+    </div>
   </div>
+
+  <div class="alert-scrim" data-bind="visible: showCreateForm, click: closeCreateForm"></div>
+  <aside class="alert-triage" data-bind="css: { 'is-open': showCreateForm }" aria-label="Create detection rule">
+    <button class="triage-close" data-bind="click: closeCreateForm" aria-label="Close">&times;</button>
+    <span class="triage-eyebrow">Detection rule</span>
+    <h2>Create a rule</h2>
+    <p>Transactions exceeding this amount will be flagged as alerts, independently of the AML risk model.</p>
+    <p class="error-message" data-bind="visible: formError, text: formError"></p>
+    <div class="screen-form-grid">
+      <div class="screen-form-span-2">
+        <label class="screen-form-label">Rule name</label>
+        <input class="screen-form-input" placeholder="e.g. Large transfer" data-bind="value: formName" />
+      </div>
+      <div>
+        <label class="screen-form-label">Amount threshold</label>
+        <input class="screen-form-input" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="50000" data-bind="value: formThreshold" />
+      </div>
+      <div>
+        <label class="screen-form-label">Severity</label>
+        <select class="screen-form-select" data-bind="options: severityOptions, value: formSeverity"></select>
+      </div>
+    </div>
+    <div class="triage-actions screen-form-actions">
+      <button data-bind="click: closeCreateForm, enable: !busy()">Cancel</button>
+      <button class="primary" data-bind="click: submitRule, enable: !busy(), text: busy() ? 'Creating…' : 'Create rule'"></button>
+    </div>
+  </aside>
 </div>

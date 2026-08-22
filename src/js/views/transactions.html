@@ -11,7 +11,7 @@
   <p class="error-message" data-bind="visible:error,text:error"></p>
   <div class="panel table-panel">
     <div class="responsive-table">
-      <table class="aegis-data-table">
+      <table class="aegis-data-table transaction-table">
         <thead>
           <tr>
             <th>Transaction</th>
@@ -35,7 +35,7 @@
             <td data-label="Risk">
               <span
                 class="risk-pill"
-                data-bind="text:riskCategory+' '+riskScore,css:$parent.riskClass(riskScore)"
+                data-bind="text:riskCategory,css:riskCategory.toLowerCase()"
               ></span>
             </td>
             <td data-label="Status">
@@ -68,7 +68,7 @@
         <small>Risk</small
         ><b
           class="risk-pill"
-          data-bind="text:riskCategory+' '+riskScore,css:$parent.riskClass(riskScore)"
+          data-bind="text:riskCategory,css:riskCategory.toLowerCase()"
         ></b>
       </div>
       <div>

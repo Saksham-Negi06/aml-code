@@ -37,7 +37,7 @@
           <td data-label="Customer" data-bind="text: id"></td>
           <td data-label="Holder type" data-bind="text: accountHolderType"></td>
           <td data-label="KYC" data-bind="text: kycVerificationStatus"></td>
-          <td data-label="Risk"><span class="risk-pill" data-bind="text:riskLevel+' '+riskScore,css:$parent.riskClass(riskScore)"></span></td>
+          <td data-label="Risk"><span class="risk-pill" data-bind="text:riskLevel,css:riskLevel.toLowerCase()"></span></td>
           <td data-label="Risk country" data-bind="text: riskCountryFlag"></td>
           <td data-label="Accounts" data-bind="text: accountCount"></td>
           <td data-label="Created" data-bind="text: createdAt"></td>

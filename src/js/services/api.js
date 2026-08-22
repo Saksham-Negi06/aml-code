@@ -33,7 +33,7 @@
     options = options || {};
     var headers = auth.applyAuthorization(options.headers);
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
-    return fetch(config.apiBaseUrl + path, Object.assign({}, options, { headers: headers }))
+    return fetch(config.apiBaseUrl + path, Object.assign({}, options, { headers: headers, cache: 'no-store' }))
       .then(function (response) {
         return parseResponse(response).then(function (payload) {
           if (!response.ok || (payload && payload.success === false)) {

@@ -12,6 +12,14 @@
     --red-bg: #fce8e6;
     --amber-bg: #fff1d8;
     --blue-bg: #e4f3f8;
+    --risk-low: #0f7657;
+    --risk-low-bg: #d9f1e8;
+    --risk-medium: #9a6700;
+    --risk-medium-bg: #fff1c2;
+    --risk-high: #c2413b;
+    --risk-high-bg: #fce8e6;
+    --risk-critical: #7f1d1d;
+    --risk-critical-bg: #f8d7da;
     --shadow: 0 16px 40px rgba(19, 40, 36, .09);
     --shadow-card: 0 1px 2px rgba(19, 40, 36, .04), 0 1px 3px rgba(19, 40, 36, .05);
     --shadow-card-hover: 0 10px 24px rgba(19, 40, 36, .10), 0 2px 6px rgba(19, 40, 36, .06)
@@ -867,7 +875,7 @@ a {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: conic-gradient(#0f7657 0 44%, #e0a642 44% 68%, #e0645a 68% 86%, #8aa19a 86%);
+    background: conic-gradient(var(--risk-low) 0 44%, var(--risk-medium) 44% 68%, var(--risk-high) 68% 86%, #8aa19a 86%);
     position: relative
 }
 
@@ -912,19 +920,19 @@ a {
 }
 
 .legend-low {
-    background: #0f7657
+    background: var(--risk-low)
 }
 
 .legend-medium {
-    background: #e0a642
+    background: var(--risk-medium)
 }
 
 .legend-high {
-    background: #e0645a
+    background: var(--risk-high)
 }
 
 .legend-critical {
-    background: #7f1d1d
+    background: var(--risk-critical)
 }
 
 .legend-unassessed {
@@ -1028,6 +1036,67 @@ a {
 
 .aegis-data-table td {
     vertical-align: middle;
+}
+
+/* Keep the transaction grid fully visible on typical laptop screens. */
+.transaction-table {
+    table-layout: fixed;
+    font-size: 12px;
+}
+
+.transaction-table th,
+.transaction-table td {
+    padding: 11px 8px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.transaction-table th:nth-child(1) { width: 12%; }
+.transaction-table th:nth-child(2),
+.transaction-table th:nth-child(3) { width: 17%; }
+.transaction-table th:nth-child(4) { width: 13%; }
+.transaction-table th:nth-child(5) { width: 12%; }
+.transaction-table th:nth-child(6) { width: 12%; }
+.transaction-table th:nth-child(7),
+.transaction-table th:nth-child(8) { width: 8.5%; }
+
+.transaction-table .risk-pill,
+.transaction-table .status {
+    justify-content: center;
+    max-width: 100%;
+    padding: 4px 6px;
+    font-size: 10px;
+}
+
+/* Keep the alerts grid fully visible on typical laptop screens. */
+.alert-table {
+    table-layout: fixed;
+    font-size: 12px;
+}
+
+.alert-table th,
+.alert-table td {
+    padding: 11px 8px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.alert-table th:nth-child(1) { width: 9%; }
+.alert-table th:nth-child(2),
+.alert-table th:nth-child(3) { width: 12%; }
+.alert-table th:nth-child(4) { width: 19%; }
+.alert-table th:nth-child(5) { width: 13%; }
+.alert-table th:nth-child(6),
+.alert-table th:nth-child(7) { width: 8%; }
+.alert-table th:nth-child(8) { width: 9%; }
+.alert-table th:nth-child(9) { width: 10%; }
+
+.alert-table .risk-pill,
+.alert-table .status {
+    justify-content: center;
+    max-width: 100%;
+    padding: 4px 6px;
+    font-size: 10px;
 }
 
 .table-customer {
@@ -1190,6 +1259,72 @@ a {
     background: #f8fbf9
 }
 
+.screen-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px
+}
+
+.screen-form-span-2 {
+    grid-column: 1/-1
+}
+
+.screen-form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted)
+}
+
+.screen-form-input,
+.screen-form-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 14px
+}
+
+.screen-form-input:focus,
+.screen-form-select:focus {
+    outline: 0;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(15, 118, 87, .1)
+}
+
+.screen-form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin: 24px -30px 0;
+    padding: 16px 30px 0;
+    background: #fff;
+    border-top: 1px solid var(--line)
+}
+
+.screen-result-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 20px 0;
+    padding: 16px 18px;
+    border-radius: 12px;
+    font-weight: 700
+}
+
+.screen-result-banner.low { background: var(--risk-low-bg); color: var(--risk-low); }
+.screen-result-banner.medium { background: var(--risk-medium-bg); color: var(--risk-medium); }
+.screen-result-banner.high { background: var(--risk-high-bg); color: var(--risk-high); }
+.screen-result-banner.critical { background: var(--risk-critical-bg); color: var(--risk-critical); }
+
 .search-panel {
     margin-bottom: 18px
 }
@@ -1279,9 +1414,20 @@ a {
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: conic-gradient(var(--red) 0 var(--score), #edf1ef var(--score));
+    background: conic-gradient(var(--risk-high) 0 var(--score), #edf1ef var(--score));
     position: relative
 }
+
+.score-ring.low { background: conic-gradient(var(--risk-low) 0 var(--score), #edf1ef var(--score)); }
+.score-ring.medium { background: conic-gradient(var(--risk-medium) 0 var(--score), #edf1ef var(--score)); }
+.score-ring.high { background: conic-gradient(var(--risk-high) 0 var(--score), #edf1ef var(--score)); }
+.score-ring.critical { background: conic-gradient(var(--risk-critical) 0 var(--score), #edf1ef var(--score)); }
+
+.risk-summary-label { font-weight: 800; }
+.risk-summary-label.low { color: var(--risk-low); }
+.risk-summary-label.medium { color: var(--risk-medium); }
+.risk-summary-label.high { color: var(--risk-high); }
+.risk-summary-label.critical { color: var(--risk-critical); }
 
 .score-ring:after {
     content: "";
@@ -1332,21 +1478,21 @@ blockquote {
 .status.resolved,
 .status.active,
 .status.verified {
-    color: var(--green);
-    background: var(--green-2)
+    color: var(--risk-low);
+    background: var(--risk-low-bg)
 }
 
 .risk-pill.medium,
 .status.monitoring {
-    color: #176c8a;
-    background: var(--blue-bg)
+    color: var(--risk-medium);
+    background: var(--risk-medium-bg)
 }
 
 .risk-pill.high,
 .status.flagged,
 .status.open {
-    color: #9a5a00;
-    background: var(--amber-bg)
+    color: var(--risk-high);
+    background: var(--risk-high-bg)
 }
 
 .risk-pill.critical,
@@ -1354,15 +1500,20 @@ blockquote {
 .status.critical,
 .status.escalated,
 .status.review-required {
-    color: var(--red);
-    background: var(--red-bg)
+    color: var(--risk-critical);
+    background: var(--risk-critical-bg)
 }
 
 .status.under-review,
 .status.investigating,
 .status.review {
-    color: #75540c;
-    background: #fff1d8
+    color: var(--risk-medium);
+    background: var(--risk-medium-bg)
+}
+
+.status.inactive {
+    color: var(--muted);
+    background: #eef2f0
 }
 
 .toast-region {
@@ -1557,7 +1708,8 @@ blockquote {
     .panel { padding: 18px 14px; border-radius: 12px; }
     .profile-title { align-items: flex-start; flex-wrap: wrap; }
     .profile-title > .risk-pill { margin-left: 0; }
-    .detail-list, .triage-context, .triage-stats, .investigation-stats { grid-template-columns: 1fr; }
+    .detail-list, .triage-context, .triage-stats, .investigation-stats, .screen-form-grid { grid-template-columns: 1fr; }
+    .screen-form-actions { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
     .recommendation { flex-direction: column; }
     .transaction-detail, .alert-triage, .investigation-report { width: 100vw; padding: 24px 18px; }
 

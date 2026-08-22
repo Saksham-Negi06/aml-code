@@ -76,9 +76,15 @@ define([
       self.sideDrawerOn(!self.sideDrawerOn());
     };
 
-    // Authentication is intentionally demo-only: each new app load begins at secure access.
-    window.localStorage.removeItem('aegis_demo_token');
-    self.isAuthenticated = ko.observable(false);
+    // Keep the preview session across page reloads. Logout explicitly clears it.
+    var storedSession;
+    try {
+      storedSession = JSON.parse(window.localStorage.getItem('aegis_demo_session') || 'null');
+    } catch (error) {
+      window.localStorage.removeItem('aegis_demo_session');
+      storedSession = null;
+    }
+    self.isAuthenticated = ko.observable(Boolean(storedSession));
     self.authMode = ko.observable('login');
     self.authMessage = ko.observable('');
     self.message = ko.observable('');
@@ -93,7 +99,11 @@ define([
     self.mobileMenuOpen = ko.observable(false);
     self.toastMessage = ko.observable('');
     self.alertCount = ko.observable(9);
-    self.currentUser = ko.observable({ name: 'Jeel Doshi', role: 'Senior compliance', initials: 'JD' });
+    self.currentUser = ko.observable(storedSession && storedSession.user || { name: 'Jeel Doshi', role: 'Senior compliance', initials: 'JD' });
+
+    self.saveSession = function () {
+      window.localStorage.setItem('aegis_demo_session', JSON.stringify({ user: self.currentUser() }));
+    };
 
     self.wireBrandHome = function () {
       var brandHome = document.querySelector('.sidebar-brand');
@@ -135,7 +145,8 @@ define([
       { path: 'transactions', detail: { label: 'Transactions', iconClass: 'oj-ux-ico-arrow-switch' } },
       { path: 'alerts', detail: { label: 'AML alerts', iconClass: 'oj-ux-ico-warning', badge: 9 } },
       { path: 'investigations', detail: { label: 'Investigations', iconClass: 'oj-ux-ico-task' } },
-      { path: 'reports', detail: { label: 'Reports', iconClass: 'oj-ux-ico-report' } }
+      { path: 'reports', detail: { label: 'Reports', iconClass: 'oj-ux-ico-report' } },
+      { path: 'rules', detail: { label: 'Detection rules', iconClass: 'oj-ux-ico-filter' } }
     ];
 
     self.navItems = navData;
@@ -156,6 +167,7 @@ define([
 
     self.login = function () {
       self.isAuthenticated(true);
+      self.saveSession();
       window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
@@ -180,6 +192,7 @@ define([
       self.userLogin(self.signupEmail().trim());
       self.currentUser({ name: self.signupName().trim(), role: 'Compliance analyst', initials: self.signupName().trim().slice(0, 2).toUpperCase() });
       self.isAuthenticated(true);
+      self.saveSession();
       window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
       self.activeView('dashboard');
       self.router.go('dashboard');
@@ -188,6 +201,7 @@ define([
 
     self.logout = function () {
       self.isAuthenticated(false);
+      window.localStorage.removeItem('aegis_demo_session');
       self.authMode('login');
       self.mobileMenuOpen(false);
       self.showToast('Signed out successfully');
@@ -226,6 +240,17 @@ define([
 
     self.goToCustomers = function () {
       self.router.go('customers');
+    };
+
+    // Pages that already filter their rows off the shared searchText observable.
+    var searchablePages = { customers: true, transactions: true, alerts: true };
+    self.submitGlobalSearch = function (data, event) {
+      if (event.key !== 'Enter' && event.keyCode !== 13) return true;
+      if (!searchablePages[self.router.stateId()]) {
+        self.activeView('transactions');
+        self.router.go('transactions');
+      }
+      return true;
     };
   }
 

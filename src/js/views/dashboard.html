@@ -66,4 +66,84 @@
       </div>
     </section>
   </div>
+
+  <div class="alert-scrim" data-bind="visible: showScreenForm, click: closeScreenForm"></div>
+  <aside class="investigation-report screen-transaction-form" data-bind="css: { 'is-open': showScreenForm }" aria-label="Screen transaction">
+    <button class="triage-close" data-bind="click: closeScreenForm" aria-label="Close">&times;</button>
+    <span class="triage-eyebrow">Transaction screening</span>
+
+    <!-- ko ifnot: formResult -->
+    <h2>Screen a transaction</h2>
+    <p>Submit transaction details to the AML risk model for a live assessment.</p>
+    <p class="error-message" data-bind="visible: formError, text: formError"></p>
+
+    <h3>Parties</h3>
+    <div class="screen-form-grid">
+      <div>
+        <label class="screen-form-label">Sender account</label>
+        <select class="screen-form-select" data-bind="options: accountOptions, optionsText: 'label', optionsValue: 'id', value: formSender, optionsCaption: 'Choose sender account'"></select>
+      </div>
+      <div>
+        <label class="screen-form-label">Receiver account</label>
+        <select class="screen-form-select" data-bind="options: accountOptions, optionsText: 'label', optionsValue: 'id', value: formReceiver, optionsCaption: 'Choose receiver account'"></select>
+      </div>
+    </div>
+
+    <h3>Transaction details</h3>
+    <div class="screen-form-grid">
+      <div>
+        <label class="screen-form-label">Amount</label>
+        <input class="screen-form-input" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" data-bind="value: formAmount" />
+      </div>
+      <div>
+        <label class="screen-form-label">Payment type</label>
+        <select class="screen-form-select" data-bind="options: paymentTypeOptions, optionsText: 'label', optionsValue: 'value', value: formPaymentType"></select>
+      </div>
+      <div>
+        <label class="screen-form-label">Payment currency</label>
+        <select class="screen-form-select" data-bind="options: currencyOptions, optionsText: 'label', optionsValue: 'value', value: formPaymentCurrency"></select>
+      </div>
+      <div>
+        <label class="screen-form-label">Received currency</label>
+        <select class="screen-form-select" data-bind="options: currencyOptions, optionsText: 'label', optionsValue: 'value', value: formReceivedCurrency"></select>
+      </div>
+      <div>
+        <label class="screen-form-label">Sender bank location</label>
+        <select class="screen-form-select" data-bind="options: bankLocationOptions, optionsText: 'label', optionsValue: 'value', value: formSenderLocation"></select>
+      </div>
+      <div>
+        <label class="screen-form-label">Receiver bank location</label>
+        <select class="screen-form-select" data-bind="options: bankLocationOptions, optionsText: 'label', optionsValue: 'value', value: formReceiverLocation"></select>
+      </div>
+      <div class="screen-form-span-2">
+        <label class="screen-form-label">Transaction date &amp; time</label>
+        <input class="screen-form-input" type="datetime-local" data-bind="value: formDatetime" />
+      </div>
+    </div>
+    <label class="keep-signed"><input type="checkbox" data-bind="checked: formUseGemini" /> Use Gemini for a richer explanation</label>
+    <div class="triage-actions screen-form-actions">
+      <button data-bind="click: closeScreenForm, enable: !formSubmitting()">Cancel</button>
+      <button class="primary" data-bind="click: submitScreenTransaction, enable: !formSubmitting(), text: formSubmitting() ? 'Screening…' : 'Screen transaction'"></button>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: formResult -->
+    <!-- ko with: formResult -->
+    <div class="screen-result-banner" data-bind="css: riskCategory.toLowerCase()">
+      <b data-bind="text: riskCategory + ' RISK'"></b>
+      <span data-bind="text: shouldFlag ? 'Flagged for review' : 'No action required'"></span>
+    </div>
+    <h2>Screening complete</h2>
+    <p data-bind="text: 'Transaction ' + transactionId + ' has been created and assessed.'"></p>
+    <h3>Risk explanation</h3>
+    <div class="triage-reason"><p data-bind="text: explanation"></p></div>
+    <h3>Recommendation</h3>
+    <div class="recommendation" data-bind="text: recommendation"></div>
+    <!-- /ko -->
+    <div class="triage-actions screen-form-actions">
+      <button data-bind="click: screenAnother">Screen another</button>
+      <button class="primary" data-bind="click: closeScreenForm">Done</button>
+    </div>
+    <!-- /ko -->
+  </aside>
 </div>
