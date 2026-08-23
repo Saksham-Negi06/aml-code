@@ -1,6 +1,7 @@
 package com.aml.transaction.service;
 import com.aml.transaction.client.FastApiClient;
 import com.aml.common.dto.request.CreateTransactionRequest;
+import com.aml.common.dto.request.CreateInvestigationCaseRequest;
 import com.aml.common.dto.request.FastApiRequest;
 import com.aml.common.dto.response.FastApiResponse;
 import com.aml.common.dto.response.RiskAssessmentResponse;
@@ -41,6 +42,7 @@ public class TransactionService {
     private final FastApiClient fastApiClient;
 
     private final ObjectMapper objectMapper;
+        private final InvestigationCaseService investigationCaseService;
 
     public TransactionService(
             TransactionRepository transactionRepository,
@@ -51,7 +53,8 @@ public class TransactionService {
                     featureSnapshotRepository,
             RiskAssessmentRepository riskAssessmentRepository,
             FastApiClient fastApiClient,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            InvestigationCaseService investigationCaseService
     ) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
@@ -61,6 +64,7 @@ public class TransactionService {
         this.riskAssessmentRepository = riskAssessmentRepository;
         this.fastApiClient = fastApiClient;
         this.objectMapper = objectMapper;
+        this.investigationCaseService = investigationCaseService;
     }
 
     // ============================================================
@@ -404,6 +408,14 @@ public class TransactionService {
                 riskAssessmentRepository.save(
                         riskAssessment
                 );
+
+        if (Boolean.TRUE.equals(savedRiskAssessment.getShouldFlag())) {
+            savedTransaction.setStatus(TransactionStatus.UNDER_REVIEW);
+            transactionRepository.save(savedTransaction);
+            CreateInvestigationCaseRequest caseRequest = new CreateInvestigationCaseRequest();
+            caseRequest.setTransactionId(savedTransaction.getTransactionId());
+            investigationCaseService.create(caseRequest);
+        }
 
         // --------------------------------------------------------
         // 11. Publish transaction event

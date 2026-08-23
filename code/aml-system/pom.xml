@@ -28,6 +28,7 @@
         <module>aml-eureka-server</module>
         <module>aml-gateway</module>
         <module>aml-transaction-service</module>
+        <module>aml-auth-service</module>
     </modules>
 
     <dependencyManagement>

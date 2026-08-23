@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: auth-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: ${JWT_SECRET:change-this-development-secret-key-to-a-long-value}
+  expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+
+auth:
+  default-username: ${AUTH_DEFAULT_USERNAME:admin}
+  default-password: ${AUTH_DEFAULT_PASSWORD:admin123}
+  default-role: ${AUTH_DEFAULT_ROLE:ADMIN}
