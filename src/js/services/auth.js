@@ -8,7 +8,10 @@
   }
 }(typeof self !== 'undefined' ? self : this, function (config) {
   'use strict';
-  function storage() { return typeof window !== 'undefined' ? window.localStorage : null; }
+  function storage() {
+    if (typeof window === 'undefined') return null;
+    return window.sessionStorage || window.localStorage;
+  }
   function getToken() {
     var store = storage();
     return config.auth.enabled && store ? store.getItem(config.auth.tokenStorageKey) : null;
@@ -29,9 +32,20 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials || {})
     }).then(function (response) {
-      return response.json().then(function (payload) {
-        if (!response.ok) throw new Error(payload.message || 'Authentication failed.');
-        var data = Object.prototype.hasOwnProperty.call(payload, 'data') ? payload.data : payload;
+      var responseBody = typeof response.text === 'function'
+        ? response.text()
+        : response.json().then(function (payload) { return JSON.stringify(payload); });
+      return responseBody.then(function (text) {
+        var payload = null;
+        if (text) {
+          try {
+            payload = JSON.parse(text);
+          } catch (error) {
+            throw new Error(response.ok ? 'The gateway returned an invalid login response.' : 'Invalid username or password.');
+          }
+        }
+        if (!response.ok) throw new Error((payload && payload.message) || 'Invalid username or password.');
+        var data = payload && Object.prototype.hasOwnProperty.call(payload, 'data') ? payload.data : payload;
         var token = data && (data.accessToken || data.token);
         if (!token) throw new Error('Authentication response did not include an access token.');
         setToken(token);

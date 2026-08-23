@@ -11,8 +11,7 @@
   return Object.freeze({
     apiBaseUrl: 'http://localhost:8080/api/v1',
     auth: Object.freeze({
-      // Keep disabled until Spring Security/JWT endpoints are enabled in the gateway.
-      enabled: false,
+      enabled: true,
       loginPath: '/auth/login',
       tokenStorageKey: 'aml_access_token'
     })

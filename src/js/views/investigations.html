@@ -7,7 +7,7 @@
     </div>
     <p class="error-message" data-bind="visible: error, text: error"></p>
     <p class="loading-message" data-bind="visible: loading">Loading investigations…</p>
-    <div class="panel table-panel"><table class="aegis-data-table"><thead><tr><th>Investigation</th><th>Source alert</th><th>Customer</th><th>Investigator</th><th>Priority</th><th>Status</th><th>Created</th><th>Due date</th><th>Resolution</th></tr></thead><tbody data-bind="foreach: filtered"><tr class="customer-row" data-bind="click: $parent.openInvestigation"><td data-bind="text: id"></td><td data-bind="text: alert"></td><td data-bind="text: customer"></td><td data-bind="text: owner"></td><td><span class="risk-pill" data-bind="text: priority, css: priority.toLowerCase()"></span></td><td><span class="status" data-bind="text: status, css: status.toLowerCase().replace(/\s+/g, '-')"></span></td><td data-bind="text: created"></td><td data-bind="text: due"></td><td data-bind="text: resolution"></td></tr></tbody></table></div>
+    <div class="panel table-panel"><div class="responsive-table"><table class="aegis-data-table"><thead><tr><th>Investigation</th><th>Source alert</th><th>Customer</th><th>Investigator</th><th>Priority</th><th>Status</th><th>Created</th><th>Due date</th><th>Resolution</th><th>Action</th></tr></thead><tbody data-bind="foreach: filtered"><tr class="customer-row" data-bind="click: $parent.openInvestigation"><td data-label="Investigation" data-bind="text: id"></td><td data-label="Source alert" data-bind="text: alert"></td><td data-label="Customer" data-bind="text: customer"></td><td data-label="Investigator" data-bind="text: owner"></td><td data-label="Priority"><span class="risk-pill" data-bind="text: priority, css: priority.toLowerCase()"></span></td><td data-label="Status"><span class="status" data-bind="text: status, css: status.toLowerCase().replace(/\s+/g, '-')"></span></td><td data-label="Created" data-bind="text: created"></td><td data-label="Due date" data-bind="text: due"></td><td data-label="Resolution" data-bind="text: resolution"></td><td data-label="Action"><button class="table-action" data-bind="click: function(data,event){ event.stopPropagation(); $parent.openInvestigation(data); }">Investigate</button></td></tr></tbody></table></div></div>
     <div class="alert-scrim" data-bind="visible: selectedInvestigation, click: closeInvestigation"></div>
     <aside class="investigation-report" data-bind="css: { 'is-open': selectedInvestigation }, with: selectedInvestigation" aria-label="Investigation report">
         <button class="triage-close" data-bind="click: $parent.closeInvestigation" aria-label="Close">&times;</button>
@@ -37,10 +37,23 @@
         <h3>Analyst notes</h3>
         <p class="error-message" data-bind="visible: $parent.error, text: $parent.error"></p>
         <textarea class="investigation-notes" data-bind="value: $parent.noteDraft" placeholder="Add an auditable investigation note..."></textarea>
+        <label class="screen-form-label">Assign investigator</label>
+        <div class="assign-row"><input class="screen-form-input" placeholder="e.g. J. Doshi" data-bind="value: $parent.ownerDraft" /><button data-bind="click: $parent.assignOwner, enable: !$parent.busy()">Assign</button></div>
         <div class="triage-actions investigation-actions">
             <button data-bind="click: $parent.addNote, enable: !$parent.busy()">Add note</button>
+            <button data-bind="click: $parent.showReport">View report</button>
+            <button data-bind="click: function(){ $parent.download($parent.buildReport($data)); }">Download report</button>
             <button data-bind="click: $parent.escalate, enable: !$parent.busy(), text: $parent.busy() ? 'Escalating…' : 'Escalate'"></button>
             <button class="primary" data-bind="click: $parent.resolve, enable: !$parent.busy(), text: $parent.busy() ? 'Resolving…' : 'Resolve case'"></button>
         </div>
+    </aside>
+    <div class="alert-scrim" data-bind="visible: selectedReport, click: closeReport"></div>
+    <aside class="investigation-report" data-bind="css: { 'is-open': selectedReport }, with: selectedReport" aria-label="Investigation report preview">
+        <button class="triage-close" data-bind="click: $parent.closeReport" aria-label="Close">&times;</button>
+        <span class="triage-eyebrow">Investigation report</span>
+        <h2 data-bind="text: id"></h2>
+        <p data-bind="text: type + ' · ' + reference + ' · ' + date"></p>
+        <pre class="report-preview" data-bind="text: content"></pre>
+        <div class="triage-actions"><button class="primary" data-bind="click: $parent.download">Download report</button></div>
     </aside>
 </div>

@@ -14,8 +14,9 @@ define([
   'ojs/ojresponsiveknockoututils',
   'ojs/ojdrawerpopup',
   'ojs/ojmenu',
-  'ojs/ojoption'
-], function (oj, ko, Router, koBinding, NavigationList, Button, InputText, KnockoutTemplateUtils, ModuleElementUtils, Checkboxset, ArrayDataProvider, ResponsiveUtils, ResponsiveKnockoutUtils) {
+  'ojs/ojoption',
+  'services/auth'
+], function (oj, ko, Router, koBinding, NavigationList, Button, InputText, KnockoutTemplateUtils, ModuleElementUtils, Checkboxset, ArrayDataProvider, ResponsiveUtils, ResponsiveKnockoutUtils, DrawerPopup, Menu, Option, auth) {
   'use strict';
 
   function ControllerViewModel() {
@@ -46,18 +47,24 @@ define([
     // oj-module binds before createConfig's Promise resolves. An empty view is
     // a valid initial config and prevents the binding from receiving undefined.
     self.moduleConfig = ko.observable({ view: [], viewModel: null });
+    self.alertCount = ko.observable(0);
     self.moduleAdapter = { koObservableConfig: self.moduleConfig };
     var navigationSequence = 0;
     function loadModule(name) {
       var sequence = ++navigationSequence;
       return ModuleElementUtils.createConfig({
         name: name,
-        params: { rootRouter: self.router, globalSearch: self.searchText }
+        params: { rootRouter: self.router, globalSearch: self.searchText, alertCount: self.alertCount }
       }).then(function (config) {
         if (sequence === navigationSequence) self.moduleConfig(config);
       });
     }
-    loadModule(self.activeView());
+    function refreshAlertCount() {
+      ModuleElementUtils.createConfig({
+        name: 'alerts',
+        params: { rootRouter: self.router, globalSearch: self.searchText, alertCount: self.alertCount }
+      }).catch(function () {});
+    }
     self.activeView.subscribe(loadModule);
     self.selection = { path: self.router.stateId };
     self.sideDrawerOn = ko.observable(false);
@@ -76,33 +83,39 @@ define([
       self.sideDrawerOn(!self.sideDrawerOn());
     };
 
-    // Keep the preview session across page reloads. Logout explicitly clears it.
     var storedSession;
     try {
-      storedSession = JSON.parse(window.localStorage.getItem('aegis_demo_session') || 'null');
+      storedSession = JSON.parse(window.sessionStorage.getItem('aegis_demo_session') || 'null');
     } catch (error) {
-      window.localStorage.removeItem('aegis_demo_session');
+      window.sessionStorage.removeItem('aegis_demo_session');
       storedSession = null;
     }
-    self.isAuthenticated = ko.observable(Boolean(storedSession));
+    self.isAuthenticated = ko.observable(Boolean(storedSession && (!auth.isEnabled() || auth.getToken())));
+    self.isAuthenticated.subscribe(function (authenticated) {
+      if (authenticated) {
+        loadModule(self.activeView());
+        refreshAlertCount();
+      }
+    });
+    if (self.isAuthenticated()) refreshAlertCount();
     self.authMode = ko.observable('login');
     self.authMessage = ko.observable('');
+    self.authLoading = ko.observable(false);
     self.message = ko.observable('');
     self.manner = ko.observable('polite');
     self.KnockoutTemplateUtils = KnockoutTemplateUtils;
     self.username = ko.observable('admin');
-    self.password = ko.observable('password123');
+    self.password = ko.observable('');
     self.passwordVisible = ko.observable(false);
     self.signupName = ko.observable('');
     self.signupEmail = ko.observable('');
     self.signupPassword = ko.observable('');
     self.mobileMenuOpen = ko.observable(false);
     self.toastMessage = ko.observable('');
-    self.alertCount = ko.observable(9);
     self.currentUser = ko.observable(storedSession && storedSession.user || { name: 'Jeel Doshi', role: 'Senior compliance', initials: 'JD' });
 
     self.saveSession = function () {
-      window.localStorage.setItem('aegis_demo_session', JSON.stringify({ user: self.currentUser() }));
+      window.sessionStorage.setItem('aegis_demo_session', JSON.stringify({ user: self.currentUser() }));
     };
 
     self.wireBrandHome = function () {
@@ -143,7 +156,7 @@ define([
       { path: 'dashboard', detail: { label: 'Dashboard', iconClass: 'oj-ux-ico-home' } },
       { path: 'customers', detail: { label: 'Customer risk', iconClass: 'oj-ux-ico-contact' } },
       { path: 'transactions', detail: { label: 'Transactions', iconClass: 'oj-ux-ico-arrow-switch' } },
-      { path: 'alerts', detail: { label: 'AML alerts', iconClass: 'oj-ux-ico-warning', badge: 9 } },
+      { path: 'alerts', detail: { label: 'AML alerts', iconClass: 'oj-ux-ico-warning', badge: self.alertCount } },
       { path: 'investigations', detail: { label: 'Investigations', iconClass: 'oj-ux-ico-task' } },
       { path: 'reports', detail: { label: 'Reports', iconClass: 'oj-ux-ico-report' } },
       { path: 'rules', detail: { label: 'Detection rules', iconClass: 'oj-ux-ico-filter' } }
@@ -166,12 +179,43 @@ define([
     };
 
     self.login = function () {
-      self.isAuthenticated(true);
-      self.saveSession();
-      window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
-      self.activeView('dashboard');
-      self.router.go('dashboard');
-      self.showToast('Secure session started');
+      var username = self.username().trim();
+      var password = self.password();
+      if (self.authLoading()) return;
+      self.authMessage('');
+      if (!username || !password) {
+        self.authMessage('Enter your username and password to continue.');
+        return;
+      }
+
+      self.authLoading(true);
+      auth.login({ username: username, password: password })
+        .then(function (data) {
+          var accountName = data.username || username;
+          var role = data.role || 'USER';
+          self.userLogin(accountName);
+          self.currentUser({
+            name: accountName,
+            role: role.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, function (letter) { return letter.toUpperCase(); }),
+            initials: accountName.slice(0, 2).toUpperCase()
+          });
+          self.isAuthenticated(true);
+          self.saveSession();
+          window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
+          self.activeView('dashboard');
+          self.router.go('dashboard');
+          self.showToast('Secure session started');
+        })
+        .catch(function (error) {
+          self.authMessage(error.message || 'Invalid username or password.');
+        })
+        .then(function () {
+          self.authLoading(false);
+        });
+    };
+
+    self.clearAuthMessage = function () {
+      if (self.authMessage()) self.authMessage('');
     };
 
     self.showSignup = function () {
@@ -185,23 +229,13 @@ define([
     };
 
     self.signup = function () {
-      if (!self.signupName().trim() || !self.signupEmail().trim() || !self.signupPassword()) {
-        self.authMessage('Complete all fields to create your workspace access.');
-        return;
-      }
-      self.userLogin(self.signupEmail().trim());
-      self.currentUser({ name: self.signupName().trim(), role: 'Compliance analyst', initials: self.signupName().trim().slice(0, 2).toUpperCase() });
-      self.isAuthenticated(true);
-      self.saveSession();
-      window.setTimeout(function () { self.wireTopbarChrome(); self.wireBrandHome(); }, 0);
-      self.activeView('dashboard');
-      self.router.go('dashboard');
-      self.showToast('Your secure workspace is ready');
+      self.authMessage('Account registration is managed by your administrator.');
     };
 
     self.logout = function () {
       self.isAuthenticated(false);
-      window.localStorage.removeItem('aegis_demo_session');
+      auth.clearToken();
+      window.sessionStorage.removeItem('aegis_demo_session');
       self.authMode('login');
       self.mobileMenuOpen(false);
       self.showToast('Signed out successfully');

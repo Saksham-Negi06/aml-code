@@ -57,7 +57,11 @@ define(['knockout','ojs/ojarraydataprovider','services/api','viewModels/base','o
             .catch(function () { return buildAlert(transaction, null, matchedRules, cases); });
         }));
       })
-      .then(function (items) { self.rows(items.filter(Boolean)); })
+      .then(function (items) {
+        var alerts = items.filter(Boolean);
+        self.rows(alerts);
+        if (params && params.alertCount) params.alertCount(alerts.length);
+      })
       .catch(function (e) { self.error(e.message); })
       .finally(function () { self.loading(false); });
   } return AlertsViewModel;

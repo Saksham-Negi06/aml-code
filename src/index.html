@@ -123,7 +123,7 @@
             <input
               id="login-username"
               class="auth-input"
-              data-bind="value: username"
+              data-bind="value: username, event: { input: clearAuthMessage }"
               autocomplete="username"
             />
             <div class="label-row">
@@ -140,7 +140,7 @@
               <input
                 id="login-password"
                 class="native-password"
-                data-bind="value: password, attr: { type: passwordVisible() ? 'text' : 'password' }"
+                data-bind="value: password, event: { input: clearAuthMessage }, attr: { type: passwordVisible() ? 'text' : 'password' }"
                 autocomplete="current-password"
               /><button
                 type="button"
@@ -152,11 +152,17 @@
               ><input type="checkbox" checked /> Keep me signed in on this
               device</label
             >
-            <button class="auth-submit" type="submit">
-              Sign in securely <span>→</span>
+            <button class="auth-submit" type="submit" data-bind="disable: authLoading">
+              <span data-bind="text: authLoading() ? 'Signing in...' : 'Sign in securely'"></span><span data-bind="visible: !authLoading()">→</span>
             </button>
+            <p
+              class="auth-message"
+              role="alert"
+              aria-live="assertive"
+              data-bind="visible: authMessage, text: authMessage"
+            ></p>
             <p class="demo-note">
-              Demo access is pre-filled. Any credentials work in preview mode.
+              Use your organization credentials to access the compliance workspace.
             </p>
             <p class="auth-switch">
               New to Aegis?
@@ -216,8 +222,6 @@
           </form>
         </section>
       </main>
-      <!-- ko if: isAuthenticated -->
-
       <div
         id="announce"
         tabindex="-1"
@@ -229,7 +233,7 @@
           <oj-bind-text value="[[message]]"></oj-bind-text>
         </p>
       </div>
-      <div class="aegis-root">
+      <div class="aegis-root" data-bind="visible: isAuthenticated">
         <div class="app-view">
           <aside class="sidebar">
             <div class="brand sidebar-brand">
@@ -433,7 +437,6 @@
           </div>
         </footer>
       </div>
-      <!-- /ko -->
     </div>
 
     <!-- This injects script tags for the main javascript files -->

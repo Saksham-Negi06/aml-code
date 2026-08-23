@@ -360,6 +360,7 @@ a {
 .keep-signed { display: flex; align-items: center; gap: 10px; margin: 20px 0 16px; color: var(--muted); font-size: 14px; }
 .keep-signed input { accent-color: var(--green); }
 .auth-submit { width: 100%; height: 62px; border: 0; border-radius: 12px; background: var(--green); color: #fff; cursor: pointer; font-weight: 700; font-size: 16px; box-shadow: 0 10px 20px rgba(15, 118, 87, .18); }
+.auth-submit:disabled { cursor: wait; opacity: .72; }
 .auth-submit:hover { background: #0c5f45; box-shadow: 0 14px 26px rgba(15, 118, 87, .24); }
 .auth-submit span { margin-left: 14px; font-size: 20px; }
 .auth-switch { margin: 24px 0 0 !important; text-align: center; color: var(--muted); font-size: 14px !important; }
@@ -842,6 +843,9 @@ a {
     align-items: end
 }
 
+.bar-wrap { position: relative; }
+.bar-value { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px; color: var(--muted); font-size: 11px; font-weight: 800; }
+
 .bar-wrap i {
     width: 100%;
     border-radius: 7px 7px 0 0;
@@ -1237,6 +1241,13 @@ a {
 .investigation-notes { width: 100%; min-height: 112px; padding: 14px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); resize: vertical; }
 .investigation-notes:focus { outline: 2px solid rgba(15, 118, 87, .18); border-color: var(--green); }
 .investigation-actions { margin-top: 16px; }
+.report-preview { margin: 24px 0; padding: 16px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: #f4f8f6; color: var(--ink); font: 12px/1.6 monospace; white-space: pre-wrap; }
+.empty-state { padding: 24px; color: var(--muted); text-align: center; }
+.table-action { padding: 7px 10px; border: 1px solid var(--green); border-radius: 7px; background: #fff; color: var(--green); font-weight: 700; cursor: pointer; }
+.table-action:hover { background: var(--green); color: #fff; }
+.assign-row { display: flex; gap: 8px; align-items: stretch; }
+.assign-row .screen-form-input { flex: 1; min-width: 0; }
+.assign-row button { padding: 10px 14px; border: 1px solid var(--green); border-radius: 8px; background: var(--green); color: #fff; font-weight: 700; cursor: pointer; }
 .triage-close { float: right; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font-size: 22px; cursor: pointer; }
 .triage-eyebrow { color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
 .alert-triage h2 { margin: 8px 0 4px; font-size: 24px; }

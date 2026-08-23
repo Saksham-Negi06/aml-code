@@ -28,7 +28,7 @@
       </div>
       <div class="risk-chart">
         <!-- ko foreach: activity -->
-        <span class="bar-wrap" data-bind="attr: { title: label + ': ' + count + ' transaction(s)' }"><i data-bind="style: {height: $data.height + '%'}"></i></span>
+        <span class="bar-wrap" data-bind="attr: { title: label + ': ' + count + ' transaction(s)' }"><b class="bar-value" data-bind="text: count"></b><i data-bind="style: {height: $data.height + '%'}"></i></span>
         <!-- /ko -->
       </div>
       <div class="chart-labels">
