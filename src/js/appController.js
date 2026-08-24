@@ -66,6 +66,7 @@ define([
       }).catch(function () {});
     }
     self.activeView.subscribe(loadModule);
+    loadModule(self.activeView());
     self.selection = { path: self.router.stateId };
     self.sideDrawerOn = ko.observable(false);
     self.smScreen = ResponsiveKnockoutUtils.createMediaQueryObservable(

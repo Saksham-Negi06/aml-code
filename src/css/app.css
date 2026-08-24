@@ -235,7 +235,8 @@ a {
 
 .login-copy h1 {
     font: 700 clamp(58px, 5vw, 84px)/1.03 Manrope, Arial, sans-serif;
-    margin: 28px 0
+    margin: 28px 0;
+    color: #fff
 }
 
 .login-copy p {
