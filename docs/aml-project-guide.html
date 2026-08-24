@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AML Command Center - Project Guide</title>
+  <style>
+    @page { size: A4; margin: 15mm 16mm 16mm; }
+    :root { --ink: #17231f; --muted: #56655f; --line: #d7e0db; --teal: #176b68; --mint: #e8f3ee; --gold: #b57423; --rose: #a44b4b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font: 10.5pt/1.45 Georgia, serif; }
+    h1, h2, h3, th, .kicker, .tag, .flow, .small, .endpoint { font-family: Arial, sans-serif; }
+    h1 { font-size: 31pt; line-height: 1.05; margin: 0 0 10px; letter-spacing: 0; }
+    h2 { color: var(--teal); font-size: 18pt; margin: 0 0 11px; border-bottom: 2px solid var(--teal); padding-bottom: 5px; }
+    h3 { font-size: 11pt; margin: 13px 0 4px; color: var(--teal); }
+    p { margin: 5px 0 9px; }
+    ul { margin: 5px 0 9px 19px; padding: 0; }
+    li { margin: 3px 0; }
+    .cover { min-height: 245mm; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(145deg, #f5faf7, #e4f1eb); padding: 25mm 18mm 18mm; margin: -15mm -16mm -16mm; }
+    .kicker { color: var(--gold); font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; font-size: 9pt; }
+    .subtitle { font-size: 15pt; color: var(--muted); max-width: 125mm; }
+    .cover-note { border-left: 4px solid var(--teal); padding: 9px 13px; background: rgba(255,255,255,.62); max-width: 135mm; }
+    .meta { color: var(--muted); font: 9pt Arial, sans-serif; }
+    .page { page-break-before: always; padding-top: 2mm; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 5px; padding: 10px; break-inside: avoid; }
+    .card strong { font-family: Arial, sans-serif; color: var(--teal); }
+    .tag { display: inline-block; background: var(--mint); color: var(--teal); font-size: 8pt; font-weight: bold; padding: 2px 6px; margin: 2px 3px 2px 0; }
+    .diagram { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr; align-items: center; gap: 5px; margin: 15px 0; }
+    .box { border: 2px solid var(--teal); background: #f8fcfa; padding: 10px 7px; text-align: center; font: bold 9pt Arial, sans-serif; }
+    .arrow { color: var(--gold); font: bold 15pt Arial, sans-serif; text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin: 7px 0 12px; font-size: 8.7pt; }
+    th { background: var(--teal); color: white; text-align: left; padding: 5px; }
+    td { border: 1px solid var(--line); padding: 5px; vertical-align: top; }
+    tr:nth-child(even) td { background: #f5f9f7; }
+    .endpoint { font-size: 8.5pt; color: #245c59; white-space: nowrap; }
+    .flow { background: #172f2c; color: #effaf5; padding: 11px 14px; border-radius: 4px; font-size: 9pt; line-height: 1.6; }
+    .callout { border-left: 4px solid var(--gold); background: #fff7e9; padding: 8px 11px; margin: 9px 0; }
+    .warning { border-left-color: var(--rose); background: #fff1f1; }
+    .small { font-size: 8.5pt; color: var(--muted); }
+    .footer { margin-top: 15px; border-top: 1px solid var(--line); padding-top: 5px; color: var(--muted); font: 8pt Arial, sans-serif; }
+    code { font-family: Consolas, monospace; font-size: .9em; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div>
+      <div class="kicker">Project walkthrough</div>
+      <h1>AML Command Center</h1>
+      <div class="subtitle">How the Oracle JET frontend, gateway APIs, authentication, risk model, alerts, and investigations work together.</div>
+    </div>
+    <div>
+      <div class="cover-note"><strong>The one-sentence explanation</strong><br>The browser is a Knockout MVVM dashboard that routes analysts between compliance modules, calls the Spring Cloud Gateway at <code>http://localhost:8080/api/v1</code>, enriches transactions with risk assessments, and turns model or rule matches into investigations.</div>
+      <p class="meta">Prepared for project explanation | 24 August 2026<br>Source reviewed: <code>src/js</code>, tests, configuration, and README</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>1. Architecture At A Glance</h2>
+    <p>The application uses Oracle JET 16.1 with RequireJS, Knockout observables, and MVVM-style view models. The frontend does not retain a client-side database: modules load their data from services on demand.</p>
+    <div class="diagram">
+      <div class="box">Browser<br><span class="small">Oracle JET views + Knockout</span></div><div class="arrow">-&gt;</div>
+      <div class="box">Frontend service layer<br><span class="small">api.js + auth.js</span></div><div class="arrow">-&gt;</div>
+      <div class="box">Spring Cloud Gateway<br><span class="small">localhost:8080/api/v1</span></div>
+    </div>
+    <div class="diagram">
+      <div class="box">Route view models<br><span class="small">dashboard, customers, alerts...</span></div><div class="arrow">-&gt;</div>
+      <div class="box">Backend services<br><span class="small">customers, accounts, transactions, cases, rules</span></div><div class="arrow">-&gt;</div>
+      <div class="box">Risk / ML assessment<br><span class="small">transaction risk endpoint</span></div>
+    </div>
+    <h3>Startup sequence</h3>
+    <ol>
+      <li><code>src/js/main.js</code> configures RequireJS paths and loads <code>root</code>.</li>
+      <li><code>root.js</code> waits for the document, then applies Knockout bindings to <code>#globalBody</code>.</li>
+      <li><code>appController.js</code> configures routes, loads the active <code>oj-module</code>, and passes shared parameters such as the router, global search, and alert count.</li>
+      <li>The active view model calls <code>services/api.js</code>; its observables update the Oracle JET view when responses arrive.</li>
+    </ol>
+    <h3>Shared frontend responsibilities</h3>
+    <div class="grid">
+      <div class="card"><strong>appController</strong><br>Navigation, authentication state, session user, mobile drawer, global search, and route-to-module wiring.</div>
+      <div class="card"><strong>base.js</strong><br>Common router access, money formatting, risk score normalization, risk category thresholds, status classes, and initials.</div>
+      <div class="card"><strong>api.js</strong><br>HTTP verbs, base URL, no-store caching, JSON parsing, response unwrapping, and consistent <code>ApiError</code> handling.</div>
+      <div class="card"><strong>auth.js</strong><br>Login request, token storage, bearer header injection, and token clearing. The active config enables JWT.</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>2. The User-Facing Modules</h2>
+    <table>
+      <tr><th>Route / module</th><th>Purpose</th><th>Main data behavior</th></tr>
+      <tr><td><strong>Dashboard</strong><br><span class="endpoint">dashboard.js</span></td><td>Executive AML workspace: counts, recent activity, customer risk distribution, and transaction screening.</td><td>Loads customers, accounts, and transactions. Separately requests risk for each transaction.</td></tr>
+      <tr><td><strong>Customer risk</strong><br><span class="endpoint">customers.js</span></td><td>Searchable customer list with KYC, account count, country-risk flag, and derived risk.</td><td>Loads customers plus accounts; calculates customer risk from linked account scores.</td></tr>
+      <tr><td><strong>Customer detail</strong><br><span class="endpoint">customer-detail.js</span></td><td>One customer, linked accounts, related transactions, and risk explanations.</td><td>Loads the selected customer, all accounts, all transactions, then risk-enriches related transactions.</td></tr>
+      <tr><td><strong>Transactions</strong><br><span class="endpoint">transactions.js</span></td><td>Searchable transaction monitoring view with flags, risk score, explanation, recommendation, and case link.</td><td>Loads transactions and cases, then calls the risk endpoint per transaction.</td></tr>
+      <tr><td><strong>AML alerts</strong><br><span class="endpoint">alerts.js</span></td><td>Combines automatic model flags and active amount-threshold rule matches into one analyst queue.</td><td>Loads transactions, cases, rules, and risk per transaction; creates a case through <code>POST /cases</code>.</td></tr>
+      <tr><td><strong>Investigations</strong><br><span class="endpoint">investigations.js</span></td><td>Case queue, owner assignment, escalation, resolution, analyst timeline, and report preview.</td><td>Loads cases; updates them with <code>PUT /cases/{id}</code>. Timeline notes are session-only.</td></tr>
+      <tr><td><strong>Reports</strong><br><span class="endpoint">reports.js</span></td><td>Generates an investigation report or a workspace activity snapshot in the browser.</td><td>Reads cases plus either the selected customer or all transactions; downloads text content.</td></tr>
+      <tr><td><strong>Detection rules</strong><br><span class="endpoint">rules.js</span></td><td>Create, activate/deactivate, delete, and review transaction amount rules.</td><td>Loads rules and transactions; calculates hits locally for the last 30 days.</td></tr>
+    </table>
+    <div class="callout"><strong>Risk scoring detail:</strong> scores are normalized from either 0-1 or 0-100 to a percentage. Categories are ranked as UNASSESSED, LOW, MEDIUM, HIGH, CRITICAL. The UI uses the backend category label when comparing severity.</div>
+  </section>
+
+  <section class="page">
+    <h2>3. API Contract And Flow</h2>
+    <p>All normal module calls go through <code>api.get</code>, <code>api.post</code>, <code>api.put</code>, or <code>api.remove</code>. The client prefixes each path with <code>http://localhost:8080/api/v1</code>.</p>
+    <table>
+      <tr><th>Method</th><th>Path</th><th>Used for</th></tr>
+      <tr><td>POST</td><td class="endpoint">/auth/login</td><td>Authenticate and receive <code>token</code> or <code>accessToken</code>.</td></tr>
+      <tr><td>GET</td><td class="endpoint">/customers<br>/customers/{id}</td><td>Customer list and customer detail.</td></tr>
+      <tr><td>GET</td><td class="endpoint">/accounts</td><td>Link accounts to customers and populate screening form options.</td></tr>
+      <tr><td>GET / POST</td><td class="endpoint">/transactions<br>/transactions/{id}/risk</td><td>Read transactions, submit a transaction, and retrieve its AML assessment.</td></tr>
+      <tr><td>GET / POST / PUT</td><td class="endpoint">/cases<br>/cases/{id}</td><td>Read cases, create an investigation from an alert, and update ownership/status.</td></tr>
+      <tr><td>GET / POST / PUT / DELETE</td><td class="endpoint">/rules<br>/rules/{id}</td><td>Manage amount-threshold detection rules.</td></tr>
+    </table>
+    <h3>Standard request lifecycle</h3>
+    <div class="flow">1. View model calls api.get/post/put/remove(path, body)<br>2. api.js adds the base URL, JSON content type for bodies, and Authorization: Bearer token when present<br>3. fetch sends cache: no-store to the gateway<br>4. api.js parses JSON, accepts 204 as null, and unwraps response.data<br>5. success:false or non-2xx becomes ApiError(message, status, details)<br>6. View model catches the error and exposes the message through its observable error state</div>
+    <h3>Response shape expected by the client</h3>
+    <pre class="card">{ "success": true, "data": [ ... ] }
+
+{ "success": false, "message": "Invalid account" }</pre>
+    <p class="small">The API helper also accepts an unwrapped payload. A malformed JSON response is reported as an invalid gateway response.</p>
+  </section>
+
+  <section class="page">
+    <h2>4. End-To-End AML Scenario</h2>
+    <p>This is the easiest story to tell in a demo: screen a transaction, assess risk, show the alert, and open an investigation.</p>
+    <div class="grid">
+      <div class="card"><span class="tag">1. INPUT</span><br>Dashboard screening form validates sender, receiver, amount, and date. It builds a transaction payload with currencies, bank locations, payment type, timestamp, and optional Gemini flag.</div>
+      <div class="card"><span class="tag">2. CREATE</span><br><code>POST /transactions</code> persists or submits the transaction through the gateway.</div>
+      <div class="card"><span class="tag">3. ASSESS</span><br><code>GET /transactions/{id}/risk</code> returns category, score, flag decision, confidence, explanation, and recommendation.</div>
+      <div class="card"><span class="tag">4. DISPLAY</span><br>Dashboard shows the result and reloads its customer, account, transaction, and risk-derived metrics.</div>
+      <div class="card"><span class="tag">5. MERGE</span><br>Alerts loads active rules and compares transaction amount to each threshold. Model flags and rule matches become one alert with source labels.</div>
+      <div class="card"><span class="tag">6. INVESTIGATE</span><br>Analyst assigns an owner or creates a case. The frontend sends <code>POST /cases</code>, then the investigation queue can update status through <code>PUT /cases/{id}</code>.</div>
+    </div>
+    <h3>What is calculated in the browser</h3>
+    <ul>
+      <li>Customer risk list values from linked account risk scores.</li>
+      <li>Dashboard risk distribution and 14-day activity chart.</li>
+      <li>Rule hit counts for transactions within the previous 30 days.</li>
+      <li>Alert source merging, severity selection, filters, and search.</li>
+      <li>Investigation report text and session-only analyst timeline notes.</li>
+    </ul>
+    <div class="callout warning"><strong>Important boundary:</strong> the frontend displays and combines risk signals; it is not the ML model. The backend/risk service remains the source of the assessment returned by the risk endpoint.</div>
+  </section>
+
+  <section class="page">
+    <h2>5. Authentication, Runtime, And Caveats</h2>
+    <h3>JWT flow</h3>
+    <ol>
+      <li>Login validates non-empty credentials in <code>appController.js</code>.</li>
+      <li><code>auth.login</code> sends them to <code>POST /api/v1/auth/login</code>.</li>
+      <li>The returned token is stored under <code>aml_access_token</code> in session storage, with a local-storage fallback in non-browser tests.</li>
+      <li>Every API request copies the caller headers and adds <code>Authorization: Bearer &lt;token&gt;</code>.</li>
+      <li>Logout clears the token and the demo session record.</li>
+    </ol>
+    <h3>Run and build</h3>
+    <div class="card"><code>npm install</code> installs dependencies<br><code>npm test</code> runs API and auth unit tests<br><code>npm run serve</code> starts the Oracle JET development server<br><code>npm run build</code> creates the optimized application in <code>web/</code><br><code>npm run verify</code> runs tests followed by the release build</div>
+    <h3>Configuration to know</h3>
+    <ul>
+      <li>Node engine is 20.x.</li>
+      <li>Gateway base URL is <code>http://localhost:8080/api/v1</code>.</li>
+      <li>The gateway, Eureka, transaction service, and ML service need to be running for live data.</li>
+      <li>The dev gateway must allow origins <code>http://localhost:8000</code> and <code>http://127.0.0.1:8000</code>.</li>
+    </ul>
+    <div class="callout warning"><strong>Documentation mismatch:</strong> the current code has <code>auth.enabled: true</code> and performs backend login, but the README still says JWT is disabled and the login is local-only. For today's explanation, describe the code behavior as implemented: JWT is enabled and expected at <code>/auth/login</code>. Update the README later so setup instructions match the source.</div>
+    <h3>Closing explanation</h3>
+    <p>“The frontend is a route-driven compliance workspace. Each module owns its data loading and presentation, while the shared API service standardizes gateway communication and errors. Transactions are enriched with risk assessments, and the alerts module joins those model results with configurable rules before analysts manage the resulting cases.”</p>
+    <div class="footer">AML Command Center project guide | Generated from the current frontend source</div>
+  </section>
+</body>
+</html>
