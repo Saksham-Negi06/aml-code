@@ -1,0 +1,876 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 13 0 R /F2 14 0 R /F3 15 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 5187 >>
+stream
+BT
+/F2 22 Tf 0.08 0.22 0.30 rg
+1 0 0 1 54 738 Tm
+(AML Compliance Platform) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 725 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 719 Tm
+(Architecture and API Flow Guide) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 706 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 700 Tm
+(Project: aml-code) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 687 Tm
+(Audience: project presentation and technical walkthrough) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 674 Tm
+(Implementation reviewed: backend branch, August 2026) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 661 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 655 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 649 Tm
+(1. What the system does) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 636 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 630 Tm
+(This project is an Anti-Money Laundering compliance backend. It accepts a financial) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 617 Tm
+(transaction, builds behavioral history features for the sender and receiver, asks a) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 604 Tm
+(FastAPI risk-scoring service for an assessment, stores the assessment, and opens an) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 591 Tm
+(investigation case when the model says the transaction should be flagged.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 578 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 572 Tm
+(The platform also provides CRUD APIs for customers, accounts, and rules, plus case) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 559 Tm
+(review and compliance-report APIs. A gateway presents one client-facing entry point,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 546 Tm
+(while Eureka provides service discovery.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 533 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 527 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 521 Tm
+(2. Runtime topology) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 508 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 502 Tm
+(Client or frontend) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 489 Tm
+(|) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 476 Tm
+(v) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 463 Tm
+(API Gateway :8080) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 450 Tm
+(|-- /api/v1/auth/** ----------> Auth Service :8082) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 437 Tm
+(|-- transaction, account,) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 424 Tm
+(| customer, case, rule,) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 411 Tm
+(| and report APIs ----------> Transaction Service :8081) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 398 Tm
+(|) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 385 Tm
+(+------------------------------> Eureka Registry :8761 \(discovery\)) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 372 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 366 Tm
+(Transaction Service :8081) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 353 Tm
+(|-- Oracle database: localhost:1521/freepdb1, schema capstone) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 340 Tm
+(|-- FastAPI risk model: http://localhost:8500) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 327 Tm
+(+-- shared DTOs, entities, repositories, and EventBus) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 314 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 308 Tm
+(The gateway has explicit local routes, so local requests do not depend on Eureka being) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 295 Tm
+(available. All three Spring services are also configured as Eureka clients; Eureka) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 282 Tm
+(itself runs as the registry server.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 269 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 263 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 257 Tm
+(3. Maven modules) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 244 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 238 Tm
+(aml-common) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 225 Tm
+(The shared contract and persistence module. It contains request and response DTOs, JPA) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 212 Tm
+(entities, repositories, enums, and FastAPI request/response DTOs. This keeps the modules) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 199 Tm
+(aligned on the data shape exchanged between layers.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 186 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 180 Tm
+(aml-config) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 167 Tm
+(Shared Spring configuration. It provides security/JWT-related configuration, datasource) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 154 Tm
+(support, HTTP client configuration, Jackson configuration, and the in-memory EventBus.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 141 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 135 Tm
+(aml-eureka-server) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 122 Tm
+(The service registry. It runs on port 8761 and uses @EnableEurekaServer so services can) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 109 Tm
+(register and discover one another.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 96 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 90 Tm
+(aml-gateway) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 77 Tm
+(The reactive API gateway on port 8080. It handles CORS and forwards client paths to the) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 13 0 R /F2 14 0 R /F3 15 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 4886 >>
+stream
+BT
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 738 Tm
+(auth or transaction service. It also carries the JWT secret configuration used at the) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 725 Tm
+(edge.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 712 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 706 Tm
+(aml-transaction-service) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 693 Tm
+(The main business service on port 8081. One service currently owns transactions,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 680 Tm
+(accounts, customers, rules, investigation cases, risk assessments, and generated) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 667 Tm
+(reports.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 654 Tm
+() Tj
+/F2 10 Tf 0.10 0.25 0.30 rg
+1 0 0 1 54 648 Tm
+(aml-auth-service) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 635 Tm
+(The authentication service on port 8082. It authenticates credentials and returns a) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 622 Tm
+(signed JWT with the username, role, token type, and expiration.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 609 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 603 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 597 Tm
+(4. Authentication flow) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 584 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 578 Tm
+(1. The client sends POST /api/v1/auth/login to the gateway.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 565 Tm
+(2. The gateway forwards the request to Auth Service :8082.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 552 Tm
+(3. AuthController passes the username and password to Spring AuthenticationManager.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 539 Tm
+(4. On success, JwtTokenService signs a token using JWT_SECRET or the development) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 526 Tm
+(default.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 513 Tm
+(5. The client sends Authorization: Bearer <token> on protected API calls.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 500 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 494 Tm
+(Default development credentials are admin / admin123 unless environment variables) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 481 Tm
+(override them. Do not use those values outside local development.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 468 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 462 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 456 Tm
+(5. Main transaction flow) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 443 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 437 Tm
+(POST /api/v1/transactions) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 424 Tm
+(|) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 411 Tm
+(v) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 398 Tm
+(1. Validate request and load sender and receiver accounts) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 385 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 372 Tm
+(2. Update their bank locations from the request) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 359 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 346 Tm
+(3. Save the transaction with status COMPLETED) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 333 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 320 Tm
+(4. Calculate sender and receiver transaction history) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 307 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 294 Tm
+(5. Save TransactionFeatureSnapshot) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 281 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 268 Tm
+(6. Build FastApiRequest and call POST <fastapi.base-url>/predict) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 255 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 242 Tm
+(7. Save RiskAssessment from FastApiResponse) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 229 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 216 Tm
+(8. If shouldFlag=true: set transaction UNDER_REVIEW and create a case) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 203 Tm
+(|) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 190 Tm
+(9. Publish the mapped transaction on the in-memory EventBus) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 177 Tm
+(|) Tj
+/F3 8 Tf 0.20 0.20 0.20 rg
+1 0 0 1 54 164 Tm
+(v) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 151 Tm
+(201 response containing TransactionResponse) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 138 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 132 Tm
+(The FastAPI response supplies requestId, riskScore, riskCategory, modelConfidence,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 119 Tm
+(shouldFlag, decisionThreshold, ensembleMethod, explanation, recommendation,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 106 Tm
+(historyContext, and processingTimeMs. The Java service stores these values so the later) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 93 Tm
+(case and report views have the decision context.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 80 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 74 Tm
+(Important behavior: the risk model call is part of the create-transaction request. A) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 13 0 R /F2 14 0 R /F3 15 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 5307 >>
+stream
+BT
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 738 Tm
+(model-service failure can therefore prevent the transaction request from completing,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 725 Tm
+(depending on the client/error handling configuration.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 712 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 706 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 700 Tm
+(6. Flagged transaction to investigation case) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 687 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 681 Tm
+(The case is created directly by InvestigationCaseService after the risk assessment is) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 668 Tm
+(saved. It is not currently created by a separate case microservice or an event) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 655 Tm
+(subscriber.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 642 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 636 Tm
+(The service:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 623 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 617 Tm
+(- Prevents duplicate cases for the same business transaction ID.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 604 Tm
+(- Requires a stored risk assessment with shouldFlag=true.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 591 Tm
+(- Sets the transaction to UNDER_REVIEW.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 578 Tm
+(- Defaults priority to CRITICAL for a CRITICAL risk category, otherwise HIGH.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 565 Tm
+(- Derives case type: SANCTIONS, STRUCTURING, TRADE_BASED, or GENERAL.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 552 Tm
+(- Routes SANCTIONS to SANCTIONS_EXPERT, STRUCTURING to BEHAVIORAL_EXPERT, CRITICAL cases) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 539 Tm
+(to SENIOR_COMPLIANCE, and other cases to COMPLIANCE_LEAD.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 526 Tm
+(- Starts the case at PENDING.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 513 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 507 Tm
+(Case resolution accepts APPROVED, REJECTED, ESCALATED, or MANUAL_REVIEW. A resolved case) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 494 Tm
+(sets its transaction back to COMPLETED; an escalated case remains ESCALATED.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 481 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 475 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 469 Tm
+(7. Report flow) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 456 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 450 Tm
+(1. POST /api/v1/reports/generate with a case ID.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 437 Tm
+(2. ReportGenerationService loads the case, its transaction, and the latest risk) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 424 Tm
+(assessment.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 411 Tm
+(3. The current implementation accepts the TEMPLATE provider only.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 398 Tm
+(4. It builds a compliance review report from stored transaction, case, and risk values.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 385 Tm
+(5. The report is stored and its ID is written back to the case.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 372 Tm
+(6. GET /api/v1/reports/{id} returns the report DTO.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 359 Tm
+(7. GET /api/v1/reports/{id}/download returns the stored content as text/plain.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 346 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 340 Tm
+(The request model contains provider and format fields for future providers and formats,) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 327 Tm
+(but non-TEMPLATE providers currently fail with a configuration error. The download) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 314 Tm
+(endpoint currently returns TXT content, even though the broader specification discusses) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 301 Tm
+(PDF reports.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 288 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 282 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 276 Tm
+(8. API map through the gateway) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 263 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 257 Tm
+(Auth Service :8082) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 244 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 238 Tm
+(POST /api/v1/auth/login) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 225 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 219 Tm
+(Transaction Service :8081) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 206 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 200 Tm
+(Transactions:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 187 Tm
+(GET /api/v1/transactions) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 174 Tm
+(POST /api/v1/transactions) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 161 Tm
+(GET /api/v1/transactions/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 148 Tm
+(GET /api/v1/transactions/business/{transactionId}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 135 Tm
+(PUT /api/v1/transactions/business/{transactionId}/review) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 122 Tm
+(GET /api/v1/transactions/account/{accountId}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 109 Tm
+(GET /api/v1/transactions/{transactionId}/risk) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 96 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 90 Tm
+(Accounts:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 77 Tm
+(GET, POST /api/v1/accounts) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 13 0 R /F2 14 0 R /F3 15 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 5252 >>
+stream
+BT
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 738 Tm
+(GET, PUT, DELETE /api/v1/accounts/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 725 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 719 Tm
+(Customers:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 706 Tm
+(GET, POST /api/v1/customers) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 693 Tm
+(GET, PUT, DELETE /api/v1/customers/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 680 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 674 Tm
+(Cases:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 661 Tm
+(GET, POST /api/v1/cases) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 648 Tm
+(GET, PUT /api/v1/cases/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 635 Tm
+(POST /api/v1/cases/{id}/resolve) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 622 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 616 Tm
+(Rules:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 603 Tm
+(GET, POST /api/v1/rules) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 590 Tm
+(PUT, DELETE /api/v1/rules/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 577 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 571 Tm
+(Reports:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 558 Tm
+(POST /api/v1/reports/generate) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 545 Tm
+(GET /api/v1/reports/{id}) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 532 Tm
+(GET /api/v1/reports/{id}/download) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 519 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 513 Tm
+(For direct local testing, replace the gateway base URL with http://localhost:8081 for) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 500 Tm
+(transaction-service endpoints, or http://localhost:8082 for login.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 487 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 481 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 475 Tm
+(9. Data and responsibility boundaries) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 462 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 456 Tm
+(Customer and Account provide the parties and account context. Transaction records the) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 443 Tm
+(payment. TransactionFeatureSnapshot stores derived history statistics. RiskAssessment) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 430 Tm
+(stores the model decision and explanation. InvestigationCase stores the human-review) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 417 Tm
+(workflow. GeneratedReport stores the rendered compliance output.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 404 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 398 Tm
+(The transaction service exposes DTOs from its controllers rather than returning JPA) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 385 Tm
+(entities directly. Account holders are represented through application IDs in the model;) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 372 Tm
+(review the database configuration before presenting this as a complete no-PII guarantee.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 359 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 353 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 347 Tm
+(10. Event-driven status: implemented versus planned) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 334 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 328 Tm
+(Implemented:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 315 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 309 Tm
+(- aml-config contains an in-memory EventBus.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 296 Tm
+(- TransactionService publishes a TransactionResponse after transaction processing.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 283 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 277 Tm
+(Current synchronous path:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 264 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 258 Tm
+(- TransactionService directly calls InvestigationCaseService.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 245 Tm
+(- ReportGenerationService is invoked by the reports controller.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 232 Tm
+(- No separate notification service is present in the Maven module list.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 219 Tm
+(- No Kafka or external event broker is configured.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 206 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 200 Tm
+(The older complete specification describes a larger asynchronous chain of) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 187 Tm
+(TransactionFlaggedEvent, CaseCreatedEvent, ReportGeneratedEvent, and) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 174 Tm
+(NotificationSentEvent. That is a useful target architecture, but it should be presented) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 161 Tm
+(as planned or future work, not as the current runtime behavior.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 148 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 142 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 136 Tm
+(11. Local startup order) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 123 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 117 Tm
+(Prerequisites: Java 17, Maven, Oracle database configured for the application, and the) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 104 Tm
+(FastAPI model service on port 8500.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 91 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 85 Tm
+(From code/aml-system:) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 72 Tm
+() Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 13 0 R /F2 14 0 R /F3 15 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 1884 >>
+stream
+BT
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 738 Tm
+(1. mvn clean install) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 725 Tm
+(2. Start aml-eureka-server on 8761.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 712 Tm
+(3. Start aml-auth-service on 8082.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 699 Tm
+(4. Start aml-transaction-service on 8081.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 686 Tm
+(5. Start aml-gateway on 8080.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 673 Tm
+(6. Send login and business API requests through http://localhost:8080.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 660 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 654 Tm
+(The transaction service uses ddl-auto: create-drop, so database schema lifecycle should) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 641 Tm
+(be checked before using this configuration with persistent data.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 628 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 622 Tm
+() Tj
+/F2 13 Tf 0.00 0.40 0.45 rg
+1 0 0 1 54 616 Tm
+(12. Presentation script) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 603 Tm
+() Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 597 Tm
+(Start at the gateway: one client entry point and two explicit downstream destinations.) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 584 Tm
+(Show login next: credentials become a JWT, which is sent as a Bearer token. Then follow) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 571 Tm
+(one transaction request through validation, history features, FastAPI prediction, risk) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 558 Tm
+(persistence, and automatic case creation. Finish with case resolution and report) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 545 Tm
+(generation. Be explicit that the current implementation is synchronous at the case) Tj
+/F1 9 Tf 0.14 0.16 0.18 rg
+1 0 0 1 54 532 Tm
+(boundary and that the broader event-driven notification chain is future architecture.) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+14 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+15 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+xref
+0 16
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000146 00000 n 
+0000000295 00000 n 
+0000005534 00000 n 
+0000005683 00000 n 
+0000010621 00000 n 
+0000010770 00000 n 
+0000016129 00000 n 
+0000016279 00000 n 
+0000021584 00000 n 
+0000021735 00000 n 
+0000023672 00000 n 
+0000023743 00000 n 
+0000023819 00000 n 
+trailer
+<< /Size 16 /Root 1 0 R >>
+startxref
+23888
+%%EOF
